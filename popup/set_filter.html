@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="set_filter.css"/>
-  </head>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="set_filter.css" />
+</head>
 
 <body>
   <div id="popup-content">
-    <h2>Blocked channels:</h2>
+    <h2>Channel filters:</h2>
     <ul>
       <li>This</li>
       <li>is a</li>
       <li>Test</li>
     </ul>
-    <div class="button test">Add channel</div>
-    <h2>Title filter:</h2>
+    <form>
+      <label>Add channel filter:</label>
+      <input type="text" id="channel_filter">
+      <button type="submit">Save</button>
+    </form>
+    <h2>Title filters:</h2>
     <ul>
       <li>This</li>
       <li>is a</li>
       <li>Test</li>
     </ul>
-    <div class="button test">Add title filter</div>
+    <form>
+      <label>Add title filter:</label>
+      <input type="text" id="title_filter">
+      <button type="submit">Save</button>
+    </form>
   </div>
   <script src="set_filter.js"></script>
 </body>

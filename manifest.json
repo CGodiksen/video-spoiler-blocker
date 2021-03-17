@@ -3,8 +3,8 @@
   "name": "Video Spoiler Blocker",
   "version": "1.0",
   "description": "Blocking video length information from specific videos to avoid spoilers.",
+  "homepage_url": "https://github.com/CGodiksen/video-spoiler-blocker",
   "icons": {
-    "36": "icons/block_36.png",
     "48": "icons/block_48.png"
   },
   "content_scripts": [
@@ -12,5 +12,10 @@
       "matches": ["*://*.youtube.com/*"],
       "js": ["spoiler_blocker.js"]
     }
-  ]
+  ],
+  "browser_action": {
+    "default_icon": "icons/block_36.png",
+    "default_title": "Video Spoiler Blocker",
+    "default_popup": "popup/set_filter.html"
+  }
 }

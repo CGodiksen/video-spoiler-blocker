@@ -11,7 +11,8 @@
   },
 
   "permissions": [
-    "*://developer.mozilla.org/*"
+    "tabs",
+    "*://*.youtube.com/*"
   ],
 
   "content_scripts": [

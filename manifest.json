@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "Video Spoiler Blocker",
+  "version": "1.0",
+  "description": "Blocking video length information from specific videos to avoid spoilers.",
+  "icons": {
+    "48": "icons/block_48.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["spoiler_blocker.js"]
+    }
+  ]
+}

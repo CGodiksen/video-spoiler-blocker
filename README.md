@@ -8,6 +8,6 @@ The intended use for the add-on is to block video length information from specif
 
 You know that this highlight video is for a best of 3 match and that a single game typically takes ~15 minutes when cut into only highlights. With this information you can now derive that the match was a 2-0 and even derive the winner after only watching the first game. Blocking the channel or blocking videos with titles including the term "HIGHLIGHTS | CSGO" would remove the video length information and result in the following image.
 
-![Youtube video without time](https://i.imgur.com/m6CpzUK.png)
+![Youtube video without time](https://i.imgur.com/lWTEYaa.png)
 
 ## Supported Browsers

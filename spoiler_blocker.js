@@ -19,8 +19,9 @@ if (window.location.href.includes("watch")) {
   console.log(videos);
   
   videos.forEach(video => {
-    const [thumbnail, info] = video.childNodes
-    console.log(thumbnail);
-    console.log(info);
+    const [thumbnail, details] = video.childNodes
+    
+    const channel_name = details.childNodes[0]
+    console.log(channel_name.title);
   });
 }

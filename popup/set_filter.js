@@ -10,6 +10,26 @@ const addTitleFilterBtn = document.querySelector('.add-title-filter');
 
 // Add event listeners to buttons.
 addChannelFilterBtn.addEventListener("click", addChannelFilter)
+
+const addChannelFilter = () => {
+  const channelFilter = inputChannelFilter.value;
+  const gettingItem = browser.storage.local.get(channelFilter);
+
+  gettingItem
+    .then((result) => {
+      const objTest = Object.keys(result);
+
+      if (objTest.length < 1 && channelFilter !== "") {
+        inputChannelFilter.value = '';
+        storeChannelFilter(channelFilter);
+      }
+    })
+    .catch(error => {
+      onError(error)
+    })
+}
+
+
 addTitleFilterBtn.addEventListener("click", addTitleFilter)
 
 // Generic error handler.

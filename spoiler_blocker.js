@@ -5,7 +5,7 @@ if (window.location.href.includes("watch")) {
   console.log(videoTitle.textContent)
   console.log(timeDisplay);
 
-  if (videoTitle.textContent.includes("Positive Mood")) {
+  if (videoTitle.textContent.includes("Positive Mood") && timeDisplay) {
     timeDisplay.remove()
   }
 } else {
@@ -28,8 +28,8 @@ if (window.location.href.includes("watch")) {
       videoLength.remove()
     }
 
-    const channelName = details.childNodes[0].title
-    if (channelName.includes("Relax Cafe" && videoLength)) {
+    const channelName = details.getElementsByTagName("a").namedItem("avatar-link").title
+    if (channelName.includes("Lounge") && videoLength) {
       videoLength.remove()
     }
   });

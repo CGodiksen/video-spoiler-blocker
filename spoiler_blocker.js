@@ -1,13 +1,16 @@
 if (window.location.href.includes("watch")) {
-  const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0]
   const timeDisplay = document.getElementsByClassName("ytp-time-display notranslate")[0]
-
-  console.log(videoTitle.textContent)
-  console.log(timeDisplay);
-
-  if (videoTitle.textContent.includes("Positive Mood") && timeDisplay) {
+  
+  const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
+  if (videoTitle.includes("Positive Mood") && timeDisplay) {
     timeDisplay.remove()
   }
+  
+  const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
+  if (channelName === "Lounge Music" && timeDisplay) {
+    timeDisplay.remove()
+  } 
+
 } else {
   // Extracting every video on the homepage.
   const grid_media = document.getElementsByClassName("style-scope ytd-rich-grid-media")

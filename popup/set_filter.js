@@ -1,6 +1,6 @@
 // Initialize elements from the popup html file.
 const inputChannelFilter = document.querySelector("div.popup-content input[name='channel-filter']");
-const inputTitleFilter= document.querySelector("div.popup-contnet input[name='title-fitler']");
+const inputTitleFilter = document.querySelector("div.popup-contnet input[name='title-fitler']");
 
 const channelFilterContainer = document.querySelector("div.channel-filter-container");
 const titleFilterContainer = document.querySelector(".div.title-filter-container")
@@ -17,3 +17,22 @@ const onError = (error) => {
   console.error(error);;
 }
 
+initialize("channel-filter");
+initialize("title-filter")
+
+// Show the already existing filters in the popup.
+const initialize = (filter) => {
+  const gettingAllStorageItems = browser.storage.local.get(filter);
+
+  gettingAllStorageItems
+    .then(results => {
+      const keys = Object.keys(results);
+
+      for (let key of keys) {
+        displayFilter(key, results[key]);
+      }
+    })
+    .catch(error => {
+      onError(error)
+    });
+}

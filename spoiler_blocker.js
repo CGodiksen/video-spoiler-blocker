@@ -17,4 +17,10 @@ if (window.location.href.includes("watch")) {
     }
   }
   console.log(videos);
+  
+  videos.forEach(video => {
+    const [thumbnail, info] = video.childNodes
+    console.log(thumbnail);
+    console.log(info);
+  });
 }

@@ -13,28 +13,28 @@ const titleFilterList = document.querySelector(".ul.title-filter-list")
 const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
 
-// Add event listeners to buttons.
-addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter, "channel"))
-addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "title"))
-
 // Add a filter to the display and storage if it does not already exist in storage.
 const addFilter = (inputField, filterType) => {
   const filter = inputField.value;
   const gettingItem = browser.storage.local.get(filter);
-
+  
   gettingItem
-    .then((result) => {
-      const existingFilter = Object.keys(result);
-
-      if (existingFilter.length < 1 && filter !== "") {
-        inputField.value = '';
-        storeFilter(filter, filterType);
-      }
-    })
-    .catch(error => {
-      onError(error)
-    });
+  .then((result) => {
+    const existingFilter = Object.keys(result);
+    
+    if (existingFilter.length < 1 && filter !== "") {
+      inputField.value = '';
+      storeFilter(filter, filterType);
+    }
+  })
+  .catch(error => {
+    onError(error)
+  });
 }
+
+// Add event listeners to buttons.
+addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter, "channel"))
+addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "title"))
 
 // Storing the filter. Also storing the type of the filter to simplify displaying stored filters.
 const storeFilter = (filter, filterType) => {
@@ -49,25 +49,25 @@ const storeFilter = (filter, filterType) => {
     });
 }
 
-initialize("channel-filter");
-initialize("title-filter")
-
 // Show the already existing filters in the popup.
 const initialize = (filter) => {
   const gettingAllStorageItems = browser.storage.local.get(filter);
-
+  
   gettingAllStorageItems
-    .then(results => {
-      const keys = Object.keys(results);
-
-      for (let key of keys) {
-        displayFilter(key, results[key]);
-      }
-    })
-    .catch(error => {
-      onError(error)
-    });
+  .then(results => {
+    const keys = Object.keys(results);
+    
+    for (let key of keys) {
+      displayFilter(key, results[key]);
+    }
+  })
+  .catch(error => {
+    onError(error)
+  });
 }
+
+initialize("channel-filter");
+initialize("title-filter")
 
 // Adding the filter to one of the unordered display lists based on the filter type.
 const displayFilter = (filter, filterType) => {

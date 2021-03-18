@@ -20,11 +20,15 @@ if (window.location.href.includes("watch")) {
   
   videos.forEach(video => {
     const [thumbnail, details] = video.childNodes
-    
-    const videoLength = thumbnail.getElementsByClassName("style-scope ytd-thumbnail-overlay-time-status-renderer")[1];
+
+    const videoLength = thumbnail.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
     console.log(videoLength);
 
-    const channelName = details.childNodes[0]
-    console.log(channelName.title);
+    const channelName = details.childNodes[0].title
+    console.log(channelName);
+
+    if (channelName.includes("Relax Cafe")) {
+      videoLength.remove()
+    }
   });
 }

@@ -1,3 +1,8 @@
+// Generic error handler.
+const onError = (error) => {
+  console.error(error);
+}
+
 // Initialize elements from the popup html file.
 const inputChannelFilter = document.querySelector("div.popup-content input[name='channel-filter']");
 const inputTitleFilter = document.querySelector("div.popup-contnet input[name='title-fitler']");
@@ -9,10 +14,11 @@ const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
 
 // Add event listeners to buttons.
-addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter))
-addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter))
+addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter, "channel"))
+addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "title"))
 
-const addFilter = (inputField) => {
+// Add a filter to the display and storage if it does not already exist in storage.
+const addFilter = (inputField, filterType) => {
   const filter = inputField.value;
   const gettingItem = browser.storage.local.get(filter);
 
@@ -22,7 +28,7 @@ const addFilter = (inputField) => {
 
       if (existingFilter.length < 1 && filter !== "") {
         inputField.value = '';
-        storeFilter(filter);
+        storeFilter(filter, filterType);
       }
     })
     .catch(error => {
@@ -30,11 +36,12 @@ const addFilter = (inputField) => {
     })
 }
 
+const storeFilter = (filter, filterType) => {
+  const storingFilter = browser.storage.local.set({ [filter]: filterType });
 
-
-// Generic error handler.
-const onError = (error) => {
-  console.error(error);;
+  storingFilter.then(() => {
+    displayFilter(filter);
+  }, onError);
 }
 
 initialize("channel-filter");
@@ -49,7 +56,7 @@ const initialize = (filter) => {
       const keys = Object.keys(results);
 
       for (let key of keys) {
-        displayFilter(key, results[key]);
+        displayFilter(key);
       }
     })
     .catch(error => {

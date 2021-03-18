@@ -9,19 +9,20 @@ const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
 
 // Add event listeners to buttons.
-addChannelFilterBtn.addEventListener("click", addChannelFilter)
+addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter))
+addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter))
 
-const addChannelFilter = () => {
-  const channelFilter = inputChannelFilter.value;
-  const gettingItem = browser.storage.local.get(channelFilter);
+const addFilter = (inputField) => {
+  const filter = inputField.value;
+  const gettingItem = browser.storage.local.get(filter);
 
   gettingItem
     .then((result) => {
-      const objTest = Object.keys(result);
+      const existingFilter = Object.keys(result);
 
-      if (objTest.length < 1 && channelFilter !== "") {
-        inputChannelFilter.value = '';
-        storeChannelFilter(channelFilter);
+      if (existingFilter.length < 1 && filter !== "") {
+        inputField.value = '';
+        storeFilter(filter);
       }
     })
     .catch(error => {
@@ -30,7 +31,6 @@ const addChannelFilter = () => {
 }
 
 
-addTitleFilterBtn.addEventListener("click", addTitleFilter)
 
 // Generic error handler.
 const onError = (error) => {

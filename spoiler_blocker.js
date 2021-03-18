@@ -21,7 +21,10 @@ if (window.location.href.includes("watch")) {
   videos.forEach(video => {
     const [thumbnail, details] = video.childNodes
     
-    const channel_name = details.childNodes[0]
-    console.log(channel_name.title);
+    const videoLength = thumbnail.getElementsByClassName("style-scope ytd-thumbnail-overlay-time-status-renderer")[1];
+    console.log(videoLength);
+
+    const channelName = details.childNodes[0]
+    console.log(channelName.title);
   });
 }

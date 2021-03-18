@@ -5,10 +5,10 @@ const onError = (error) => {
 
 // Initialize elements from the popup html file.
 const inputChannelFilter = document.querySelector("div.popup-content input[name='channel-filter']");
-const inputTitleFilter = document.querySelector("div.popup-contnet input[name='title-fitler']");
+const inputTitleFilter = document.querySelector("div.popup-content input[name='title-filter']");
 
 const channelFilterList = document.querySelector("ul.channel-filter-list");
-const titleFilterList = document.querySelector(".ul.title-filter-list")
+const titleFilterList = document.querySelector("ul.title-filter-list")
 
 const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
@@ -17,19 +17,19 @@ const addTitleFilterBtn = document.querySelector('.add-title-filter');
 const addFilter = (inputField, filterType) => {
   const filter = inputField.value;
   const gettingItem = browser.storage.local.get(filter);
-  
+
   gettingItem
-  .then((result) => {
-    const existingFilter = Object.keys(result);
-    
-    if (existingFilter.length < 1 && filter !== "") {
-      inputField.value = '';
-      storeFilter(filter, filterType);
-    }
-  })
-  .catch(error => {
-    onError(error)
-  });
+    .then((result) => {
+      const existingFilter = Object.keys(result);
+
+      if (existingFilter.length < 1 && filter !== "") {
+        inputField.value = '';
+        storeFilter(filter, filterType);
+      }
+    })
+    .catch(error => {
+      onError(error)
+    });
 }
 
 // Add event listeners to buttons.
@@ -52,18 +52,18 @@ const storeFilter = (filter, filterType) => {
 // Show the already existing filters in the popup.
 const initialize = (filter) => {
   const gettingAllStorageItems = browser.storage.local.get(filter);
-  
+
   gettingAllStorageItems
-  .then(results => {
-    const keys = Object.keys(results);
-    
-    for (let key of keys) {
-      displayFilter(key, results[key]);
-    }
-  })
-  .catch(error => {
-    onError(error)
-  });
+    .then(results => {
+      const keys = Object.keys(results);
+
+      for (let key of keys) {
+        displayFilter(key, results[key]);
+      }
+    })
+    .catch(error => {
+      onError(error)
+    });
 }
 
 initialize("channel-filter");

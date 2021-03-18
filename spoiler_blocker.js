@@ -20,14 +20,13 @@ if (window.location.href.includes("watch")) {
   
   videos.forEach(video => {
     const [thumbnail, details] = video.childNodes
-
     const videoLength = thumbnail.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
-    console.log(videoLength);
+    
+    const videoTitle = details.getElementsByTagName("a").namedItem("video-title-link").title
+    console.log(videoTitle);
 
     const channelName = details.childNodes[0].title
-    console.log(channelName);
-
-    if (channelName.includes("Relax Cafe")) {
+    if (channelName.includes("Relax Cafe" && videoLength)) {
       videoLength.remove()
     }
   });

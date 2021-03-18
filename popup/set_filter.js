@@ -7,8 +7,8 @@ const onError = (error) => {
 const inputChannelFilter = document.querySelector("div.popup-content input[name='channel-filter']");
 const inputTitleFilter = document.querySelector("div.popup-contnet input[name='title-fitler']");
 
-const channelFilterContainer = document.querySelector("div.channel-filter-container");
-const titleFilterContainer = document.querySelector(".div.title-filter-container")
+const channelFilterList = document.querySelector("ul.channel-filter-list");
+const titleFilterList = document.querySelector(".ul.title-filter-list")
 
 const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
@@ -62,4 +62,8 @@ const initialize = (filter) => {
     .catch(error => {
       onError(error)
     });
+}
+
+const displayFilter = (filter) => {
+  const 
 }

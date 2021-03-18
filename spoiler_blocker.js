@@ -9,6 +9,7 @@ if (window.location.href.includes("watch")) {
     timeDisplay.remove()
   }
 } else {
+  // Extracting every video on the homepage.
   const grid_media = document.getElementsByClassName("style-scope ytd-rich-grid-media")
   const videos = []
   for (let i = 0; i < grid_media.length; i++) {
@@ -16,14 +17,16 @@ if (window.location.href.includes("watch")) {
       videos.push(grid_media[i])
     }
   }
-  console.log(videos);
   
+  // Removing the video length if the video title or channel name is blocked.
   videos.forEach(video => {
     const [thumbnail, details] = video.childNodes
     const videoLength = thumbnail.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
     
     const videoTitle = details.getElementsByTagName("a").namedItem("video-title-link").title
-    console.log(videoTitle);
+    if (videoTitle.includes("Mars") && videoLength) {
+      videoLength.remove()
+    }
 
     const channelName = details.childNodes[0].title
     if (channelName.includes("Relax Cafe" && videoLength)) {

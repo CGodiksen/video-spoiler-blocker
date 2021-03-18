@@ -33,15 +33,20 @@ const addFilter = (inputField, filterType) => {
     })
     .catch(error => {
       onError(error)
-    })
+    });
 }
 
+// Storing the filter. Also storing the type of the filter to simplify displaying stored filters.
 const storeFilter = (filter, filterType) => {
   const storingFilter = browser.storage.local.set({ [filter]: filterType });
 
-  storingFilter.then(() => {
-    displayFilter(filter);
-  }, onError);
+  storingFilter
+    .then(() => {
+      displayFilter(filter, filterType);
+    })
+    .catch(error => {
+      onError(error)
+    });
 }
 
 initialize("channel-filter");
@@ -56,7 +61,7 @@ const initialize = (filter) => {
       const keys = Object.keys(results);
 
       for (let key of keys) {
-        displayFilter(key);
+        displayFilter(key, results[key]);
       }
     })
     .catch(error => {
@@ -64,6 +69,14 @@ const initialize = (filter) => {
     });
 }
 
-const displayFilter = (filter) => {
-  const 
+// Adding the filter to one of the unordered display lists based on the filter type.
+const displayFilter = (filter, filterType) => {
+  const li = document.createElement("li")
+  li.textContent = filter
+
+  if (filterType === "channel") {
+    channelFilterList.appendChild(li)
+  } else {
+    titleFilterList.appendChild(li)
+  }
 }

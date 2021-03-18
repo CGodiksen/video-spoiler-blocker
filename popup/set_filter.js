@@ -7,3 +7,13 @@ const titleFilterContainer = document.querySelector(".div.title-filter-container
 
 const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
+
+// Add event listeners to buttons.
+addChannelFilterBtn.addEventListener("click", addChannelFilter)
+addTitleFilterBtn.addEventListener("click", addTitleFilter)
+
+// Generic error handler.
+const onError = (error) => {
+  console.error(error);;
+}
+

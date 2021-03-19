@@ -19,7 +19,7 @@ const addFilter = (inputField, filterType) => {
   const gettingFilters = browser.storage.local.get(filterType);
 
   gettingFilters
-    .then((result) => {
+    .then(result => {
       const existingFilters = result[filterType]
 
       if (!existingFilters.includes(filter) && filter !== "") {
@@ -50,15 +50,15 @@ const storeFilter = (filter, filterType, existingFilters) => {
 }
 
 // Show the already existing filters in the popup.
-const initialize = () => {
-  const gettingAllFilters = browser.storage.local.get(null);
+const initialize = (filterType) => {
+  const gettingAllFilters = browser.storage.local.get(filterType);
 
   gettingAllFilters
-    .then(results => {
-      const keys = Object.keys(results);
+    .then(result => {
+      const existingFilters = result[filterType]
 
-      for (let key of keys) {
-        displayFilter(key, results[key]);
+      for (let filter of existingFilters) {
+        displayFilter(filter, filterType);
       }
     })
     .catch(error => {
@@ -66,7 +66,8 @@ const initialize = () => {
     });
 }
 
-initialize();
+initialize("channel");
+initialize("title");
 
 // Adding the filter to one of the unordered display lists based on the filter type.
 const displayFilter = (filter, filterType) => {

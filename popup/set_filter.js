@@ -39,6 +39,8 @@ const displayFilter = (filter, filterType) => {
   const deleteButton = document.createElement("img")
   deleteButton.src = "../icons/remove_16.png"
   deleteButton.alt = "Delete filter"
+  deleteButton.height = 13
+  deleteButton.width = 13
   li.appendChild(deleteButton)
 
   deleteButton.addEventListener("click", () => deleteFilter(filter, filterType, li))

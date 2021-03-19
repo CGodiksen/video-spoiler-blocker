@@ -60,20 +60,11 @@ const deleteFilter = async (filter, filterType, li) => {
 }
 
 // Show the already existing filters in the popup.
-const initialize = (filterType) => {
-  const gettingAllFilters = browser.storage.local.get(filterType);
+const initialize = async (filterType) => {
+  const result = await browser.storage.local.get(filterType).catch(error => onError(error));
+  const existingFilters = (Object.keys(result).length !== 0) ? result[filterType] : []
 
-  gettingAllFilters
-    .then(result => {
-      const existingFilters = (Object.keys(result).length !== 0) ? result[filterType] : []
-
-      for (let filter of existingFilters) {
-        displayFilter(filter, filterType);
-      }
-    })
-    .catch(error => {
-      onError(error)
-    });
+  existingFilters.forEach(filter => displayFilter(filter, filterType))
 }
 
 initialize("channel");

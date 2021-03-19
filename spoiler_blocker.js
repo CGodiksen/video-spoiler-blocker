@@ -78,4 +78,10 @@ const getVideoMetadata = (pageType, video) => {
   return { title: videoTitle, channel: channelName }
 }
 
+// Return a promise to deliver all filters of a specific type from local storage. 
+const getExistingsFilters = async (filterType) => {
+  const result = await browser.storage.local.get(filterType).catch(error => onError(error));
+  return (Object.keys(result).length !== 0) ? result[filterType] : []
+}
+
 blockSpoilers()

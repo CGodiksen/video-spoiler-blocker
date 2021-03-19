@@ -14,13 +14,11 @@ const blockPlayerSpoilers = async () => {
   const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
   const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
 
-  const channelFilters = await getExistingsFilters("channel")
-
-  if (videoTitle.includes("Positive Mood") && timeDisplay) {
+  if (!(await titleBlocked(videoTitle)) && timeDisplay) {
     timeDisplay.remove()
   }
 
-  if (channelName === "OLD TAPES" && timeDisplay) {
+  if (!(await channelBlocked(channelName)) && timeDisplay) {
     timeDisplay.remove()
   }
 }
@@ -81,10 +79,17 @@ const getVideoMetadata = (pageType, video) => {
 }
 
 // Return true if the given title is blocked by any of the stored title filters.
-const titleBlocked = async (title) => {
+const titleBlocked = async (videoTitle) => {
   const titleFilters = await getExistingsFilters("title")
 
-  return titleFilters.some(filter => title.toLowerCase().includes(filter.toLowerCase()))
+  return titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))
+}
+
+// Return true if the given channel is blocked by any of the stores channel filters.
+const channelBlocked = async (channelName) => {
+  const channelFilters = await getExistingsFilters("channel")
+
+  return channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
 }
 
 // Return a promise to deliver all filters of a specific type from local storage. 

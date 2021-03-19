@@ -34,10 +34,11 @@ const addFilter = async (inputField, filterType) => {
 // Adding the filter to one of the unordered display lists based on the filter type.
 const displayFilter = (filter, filterType) => {
   const li = document.createElement("li")
-  li.textContent = filter
+  li.textContent = `${filter} `
 
-  const deleteButton = document.createElement("button")
-  deleteButton.textContent = "Delete"
+  const deleteButton = document.createElement("img")
+  deleteButton.src = "../icons/remove_16.png"
+  deleteButton.alt = "Delete filter"
   li.appendChild(deleteButton)
 
   deleteButton.addEventListener("click", () => deleteFilter(filter, filterType, li))

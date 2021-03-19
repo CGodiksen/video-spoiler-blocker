@@ -1,8 +1,9 @@
 const blockSpoilers = () => {
-  blockThumbnailSpoilers()
-  
   if (window.location.href.includes("watch")) {
     blockPlayerSpoilers()
+    blockThumbnailSpoilers("style-scope ytd-compact-video-renderer")
+  } else {
+    blockThumbnailSpoilers("style-scope ytd-rich-grid-media")
   }
 }
 
@@ -24,29 +25,37 @@ const blockPlayerSpoilers = () => {
 }
 
 // Removing video length infomation from the bottom right of thumbnails if necessary.
-const blockThumbnailSpoilers = () => {
+const blockThumbnailSpoilers = (videoClassName) => {
   // Extracting every video on the page.
-  const grid_media = document.getElementsByClassName("style-scope ytd-rich-grid-media")
+  const grid_media = document.getElementsByClassName(videoClassName)
   const videos = []
   for (let i = 0; i < grid_media.length; i++) {
     if (grid_media[i].id === "dismissible") {
       videos.push(grid_media[i])
     }
   }
+  console.log(videos.length);
 
   // Removing the video length on the thumbnail if the video title or channel name is blocked.
   videos.forEach(video => {
-    const [thumbnail, details] = video.childNodes
-    const videoLength = thumbnail.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
+    try {
+      console.log("hello");
+      const thumbnail = video.childNodes[1]
+      const details = video.childNodes[3]
 
-    const videoTitle = details.getElementsByTagName("a").namedItem("video-title-link").title
-    if (videoTitle.includes("Mars") && videoLength) {
-      videoLength.remove()
-    }
+      const videoLength = thumbnail.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
 
-    const channelName = details.getElementsByTagName("a").namedItem("avatar-link").title
-    if (channelName.includes("Lounge") && videoLength) {
-      videoLength.remove()
+      const videoTitle = details.getElementsByTagName("span").namedItem("video-title").title
+      if (videoTitle.includes("Rihanna") && videoLength) {
+        videoLength.remove()
+      }
+
+      const channelName = details.getElementsByTagName("a").namedItem("avatar-link").title
+      if (channelName === "Lounge" && videoLength) {
+        videoLength.remove()
+      }
+    } catch (error) {
+      console.error(error);
     }
   })
 }

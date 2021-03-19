@@ -36,9 +36,9 @@ const addFilter = (inputField, filterType) => {
     });
 }
 
-// Storing the filter. Also storing the type of the filter to simplify displaying stored filters.
+// Storing the filter in an array with all other filters of the same type.
 const storeFilter = (filter, filterType, existingFilters) => {
-  const storingFilter = browser.storage.local.set({ [filterType]: existingFilters.concat(filter)});
+  const storingFilter = browser.storage.local.set({ [filterType]: existingFilters.concat(filter) });
 
   storingFilter
     .then(() => {
@@ -53,17 +53,34 @@ const storeFilter = (filter, filterType, existingFilters) => {
 const displayFilter = (filter, filterType) => {
   const li = document.createElement("li")
   li.textContent = filter
-  
+
   const deleteButton = document.createElement("button")
   deleteButton.textContent = "Delete"
-  deleteButton.addEventListener("click", () => deleteFilter(filter, filterType))
   li.appendChild(deleteButton)
-  
+
+  deleteButton.addEventListener("click", () => deleteFilter(filter, filterType, li))
+
   if (filterType === "channel") {
     channelFilterList.appendChild(li)
   } else {
     titleFilterList.appendChild(li)
   }
+}
+
+// Delete a single filter from local storage.
+const deleteFilter = (filter, filterType, li) => {
+  const gettingFilters = browser.storage.local.get(filterType);
+
+  gettingFilters
+    .then(result => {
+      const existingFilters = result[filterType]
+      const removingFilter = browser.storage.local.set({ [filterType]: existingFilters.filter(f => f !== filter) });
+
+      removingFilter.then(li.remove())
+    })
+    .catch(error => {
+      onError(error)
+    });
 }
 
 // Show the already existing filters in the popup.

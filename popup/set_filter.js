@@ -16,15 +16,15 @@ const addTitleFilterBtn = document.querySelector('.add-title-filter');
 // Add a filter to the display and storage if it does not already exist in storage.
 const addFilter = (inputField, filterType) => {
   const filter = inputField.value;
-  const gettingItem = browser.storage.local.get(filter);
+  const gettingFilters = browser.storage.local.get(filterType);
 
-  gettingItem
+  gettingFilters
     .then((result) => {
-      const existingFilter = Object.keys(result);
+      const existingFilters = result[filterType]
 
-      if (existingFilter.length < 1 && filter !== "") {
+      if (!existingFilters.includes(filter) && filter !== "") {
         inputField.value = '';
-        storeFilter(filter, filterType, existingFilter);
+        storeFilter(filter, filterType, existingFilters);
       }
     })
     .catch(error => {

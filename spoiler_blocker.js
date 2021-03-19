@@ -1,6 +1,7 @@
 const blockSpoilers = () => {
   if (window.location.href.includes("watch")) {
     blockPlayerSpoilers()
+    blockThumbnailSpoilers("video")
   } else {
     blockThumbnailSpoilers("home")
   }
@@ -10,15 +11,14 @@ const blockSpoilers = () => {
 const blockPlayerSpoilers = () => {
   const timeDisplay = document.getElementsByClassName("ytp-time-display notranslate")[0]
 
-  // Removing the video length from the player if the title is blocked.
   const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
+  const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
+
   if (videoTitle.includes("Positive Mood") && timeDisplay) {
     timeDisplay.remove()
   }
 
-  // Removing the video length from the player if the channel is blocked.
-  const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
-  if (channelName === "Lounge Music" && timeDisplay) {
+  if (channelName === "OLD TAPES" && timeDisplay) {
     timeDisplay.remove()
   }
 }
@@ -27,16 +27,15 @@ const blockPlayerSpoilers = () => {
 const blockThumbnailSpoilers = (pageType) => {
   const videos = getVideoElements(pageType)
 
-  // Removing the video length on the thumbnail if the video title or channel name is blocked.
   videos.forEach(video => {
     try {
       const videoLength = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
       const metadata = getVideoMetadata(pageType, video)
-  
-      if (metadata.title.includes("Mikkel") && videoLength) {
+
+      if (metadata.title.includes("Queen") && videoLength) {
         videoLength.remove()
       }
-      if (metadata.channel === "Lounge" && videoLength) {
+      if (metadata.channel === "Whitney Houston" && videoLength) {
         videoLength.remove()
       }
     } catch (error) {
@@ -60,11 +59,22 @@ const getVideoElements = (pageType) => {
   return videos
 }
 
-// Returns an object containing the video title and channel.
+// Return an object containing the video title and channel for a video element.
 const getVideoMetadata = (pageType, video) => {
-  const videoTitle = video.getElementsByTagName("a").namedItem("video-title-link").title
-  const channelName = video.getElementsByTagName("a").namedItem("avatar-link").title
-  
+  let videoTitle = ""
+  let channelName = ""
+
+  switch (pageType) {
+    case "home":
+      videoTitle = video.getElementsByTagName("a").namedItem("video-title-link").title
+      channelName = video.getElementsByTagName("a").namedItem("avatar-link").title
+      break;
+    case "video":
+      videoTitle = video.getElementsByTagName("span").namedItem("video-title").title
+      channelName = video.getElementsByClassName("style-scope ytd-channel-name").namedItem("text").innerHTML
+      break;
+  }
+
   return { title: videoTitle, channel: channelName }
 }
 

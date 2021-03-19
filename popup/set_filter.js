@@ -24,7 +24,7 @@ const addFilter = (inputField, filterType) => {
 
       if (existingFilter.length < 1 && filter !== "") {
         inputField.value = '';
-        storeFilter(filter, filterType);
+        storeFilter(filter, filterType, existingFilter);
       }
     })
     .catch(error => {
@@ -37,8 +37,8 @@ addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter
 addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "title"))
 
 // Storing the filter. Also storing the type of the filter to simplify displaying stored filters.
-const storeFilter = (filter, filterType) => {
-  const storingFilter = browser.storage.local.set({ [filter]: filterType });
+const storeFilter = (filter, filterType, existingFilters) => {
+  const storingFilter = browser.storage.local.set({ [filterType]: existingFilters.concat(filter) });
 
   storingFilter
     .then(() => {

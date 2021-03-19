@@ -1,7 +1,6 @@
 const blockSpoilers = () => {
   if (window.location.href.includes("watch")) {
     blockPlayerSpoilers()
-    blockThumbnailSpoilers("video")
   } else {
     blockThumbnailSpoilers("home")
   }
@@ -32,15 +31,12 @@ const blockThumbnailSpoilers = (pageType) => {
   videos.forEach(video => {
     try {
       const videoLength = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
-
-      const videoTitle = video.getElementsByTagName(videoTitleTag).namedItem(videoTitleId).title
-
-      if (videoTitle.includes("Dua Lipa") && videoLength) {
+      const metadata = getVideoMetadata(pageType, video)
+  
+      if (metadata.title.includes("Mikkel") && videoLength) {
         videoLength.remove()
       }
-
-      const channelName = video.getElementsByTagName("a").namedItem("avatar-link").title
-      if (channelName === "Lounge" && videoLength) {
+      if (metadata.channel === "Lounge" && videoLength) {
         videoLength.remove()
       }
     } catch (error) {
@@ -51,7 +47,7 @@ const blockThumbnailSpoilers = (pageType) => {
 
 // Return all video elements in the current document. These elements contain both the thumbnail and video metadata.
 const getVideoElements = (pageType) => {
-  const className = (pageType === "home") ? "style-scope ytd-compact-video-renderer" : "style-scope ytd-rich-grid-media"
+  const className = (pageType === "home") ? "style-scope ytd-rich-grid-media" : "style-scope ytd-compact-video-renderer"
   const grid_media = document.getElementsByClassName(className)
 
   const videos = []
@@ -64,8 +60,12 @@ const getVideoElements = (pageType) => {
   return videos
 }
 
-"style-scope ytd-compact-video-renderer", "span", "video-title"
-
-"style-scope ytd-rich-grid-media", "a", "video-title-link"
+// Returns an object containing the video title and channel.
+const getVideoMetadata = (pageType, video) => {
+  const videoTitle = video.getElementsByTagName("a").namedItem("video-title-link").title
+  const channelName = video.getElementsByTagName("a").namedItem("avatar-link").title
+  
+  return { title: videoTitle, channel: channelName }
+}
 
 blockSpoilers()

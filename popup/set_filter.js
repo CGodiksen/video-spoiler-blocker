@@ -28,21 +28,10 @@ const addFilter = (inputField, filterType) => {
 
       if (!existingFilters.includes(filter) && filter !== "") {
         inputField.value = '';
-        storeFilter(filter, filterType, existingFilters);
+
+        const storingFilter = browser.storage.local.set({ [filterType]: existingFilters.concat(filter) });
+        storingFilter.then(() => displayFilter(filter, filterType))
       }
-    })
-    .catch(error => {
-      onError(error)
-    });
-}
-
-// Storing the filter in an array with all other filters of the same type.
-const storeFilter = (filter, filterType, existingFilters) => {
-  const storingFilter = browser.storage.local.set({ [filterType]: existingFilters.concat(filter) });
-
-  storingFilter
-    .then(() => {
-      displayFilter(filter, filterType);
     })
     .catch(error => {
       onError(error)
@@ -67,16 +56,16 @@ const displayFilter = (filter, filterType) => {
   }
 }
 
-// Delete a single filter from local storage.
+// Delete a single filter from storage and the display.
 const deleteFilter = (filter, filterType, li) => {
   const gettingFilters = browser.storage.local.get(filterType);
 
   gettingFilters
     .then(result => {
       const existingFilters = result[filterType]
+      
       const removingFilter = browser.storage.local.set({ [filterType]: existingFilters.filter(f => f !== filter) });
-
-      removingFilter.then(li.remove())
+      removingFilter.then(() => li.remove())
     })
     .catch(error => {
       onError(error)

@@ -21,9 +21,9 @@ addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "t
 const addFilter = async (inputField, filterType) => {
   const result = await browser.storage.local.get(filterType).catch(error => onError(error));
   const existingFilters = (Object.keys(result).length !== 0) ? result[filterType] : []
-  
+
   const filter = inputField.value;
-  
+
   if (!existingFilters.includes(filter) && filter !== "") {
     inputField.value = '';
 
@@ -51,19 +51,12 @@ const displayFilter = (filter, filterType) => {
 }
 
 // Delete a single filter from storage and the display.
-const deleteFilter = (filter, filterType, li) => {
-  const gettingFilters = browser.storage.local.get(filterType);
+const deleteFilter = async (filter, filterType, li) => {
+  const result = await browser.storage.local.get(filterType).catch(error => onError(error));
+  const existingFilters = result[filterType]
 
-  gettingFilters
-    .then(result => {
-      const existingFilters = result[filterType]
-      
-      const removingFilter = browser.storage.local.set({ [filterType]: existingFilters.filter(f => f !== filter) });
-      removingFilter.then(() => li.remove())
-    })
-    .catch(error => {
-      onError(error)
-    });
+  await browser.storage.local.set({ [filterType]: existingFilters.filter(f => f !== filter) }).catch(error => onError(error));
+  li.remove()
 }
 
 // Show the already existing filters in the popup.

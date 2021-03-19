@@ -58,12 +58,10 @@ const initialize = (filterType) => {
 
   gettingAllFilters
     .then(result => {
-      const existingFilters = result[filterType]
+      const existingFilters = (Object.keys(result).length !== 0) ? result[filterType] : []
 
-      if (existingFilters) {
-        for (let filter of existingFilters) {
-          displayFilter(filter, filterType);
-        }
+      for (let filter of existingFilters) {
+        displayFilter(filter, filterType);
       }
     })
     .catch(error => {

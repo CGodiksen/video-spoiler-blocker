@@ -20,9 +20,9 @@ const addFilter = (inputField, filterType) => {
 
   gettingFilters
     .then(result => {
-      const existingFilters = result[filterType]
+      const existingFilters = (Object.keys(result).length !== 0) ? result[filterType] : []
 
-      if (!filterExists(filter, existingFilters) && filter !== "") {
+      if (!existingFilters.includes(filter) && filter !== "") {
         inputField.value = '';
         storeFilter(filter, filterType, existingFilters);
       }
@@ -32,16 +32,13 @@ const addFilter = (inputField, filterType) => {
     });
 }
 
-const filterExists = (filter, existingFilters) => (existingFilters) ? existingFilters.includes(filter) : false
-
 // Add event listeners to buttons.
 addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter, "channel"))
 addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "title"))
 
 // Storing the filter. Also storing the type of the filter to simplify displaying stored filters.
 const storeFilter = (filter, filterType, existingFilters) => {
-  const newFilters = (existingFilters) ? existingFilters.concat(filter) : [filter]
-  const storingFilter = browser.storage.local.set({ [filterType]: newFilters });
+  const storingFilter = browser.storage.local.set({ [filterType]: existingFilters.concat(filter)});
 
   storingFilter
     .then(() => {

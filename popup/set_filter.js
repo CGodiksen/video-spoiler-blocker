@@ -74,6 +74,11 @@ const displayFilter = (filter, filterType) => {
   const li = document.createElement("li")
   li.textContent = filter
 
+  const deleteButton = document.createElement("button")
+  deleteButton.textContent = "Delete"
+  deleteButton.addEventListener("click", () => deleteFilter(filter, filterType))
+  li.appendChild(deleteButton)
+
   if (filterType === "channel") {
     channelFilterList.appendChild(li)
   } else {

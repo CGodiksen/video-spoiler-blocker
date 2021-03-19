@@ -13,6 +13,10 @@ const titleFilterList = document.querySelector("ul.title-filter-list")
 const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
 
+// Add event listeners to buttons.
+addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter, "channel"))
+addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "title"))
+
 // Add a filter to the display and storage if it does not already exist in storage.
 const addFilter = (inputField, filterType) => {
   const filter = inputField.value;
@@ -32,10 +36,6 @@ const addFilter = (inputField, filterType) => {
     });
 }
 
-// Add event listeners to buttons.
-addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter, "channel"))
-addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "title"))
-
 // Storing the filter. Also storing the type of the filter to simplify displaying stored filters.
 const storeFilter = (filter, filterType, existingFilters) => {
   const storingFilter = browser.storage.local.set({ [filterType]: existingFilters.concat(filter)});
@@ -47,6 +47,23 @@ const storeFilter = (filter, filterType, existingFilters) => {
     .catch(error => {
       onError(error)
     });
+}
+
+// Adding the filter to one of the unordered display lists based on the filter type.
+const displayFilter = (filter, filterType) => {
+  const li = document.createElement("li")
+  li.textContent = filter
+  
+  const deleteButton = document.createElement("button")
+  deleteButton.textContent = "Delete"
+  deleteButton.addEventListener("click", () => deleteFilter(filter, filterType))
+  li.appendChild(deleteButton)
+  
+  if (filterType === "channel") {
+    channelFilterList.appendChild(li)
+  } else {
+    titleFilterList.appendChild(li)
+  }
 }
 
 // Show the already existing filters in the popup.
@@ -68,20 +85,3 @@ const initialize = (filterType) => {
 
 initialize("channel");
 initialize("title");
-
-// Adding the filter to one of the unordered display lists based on the filter type.
-const displayFilter = (filter, filterType) => {
-  const li = document.createElement("li")
-  li.textContent = filter
-
-  const deleteButton = document.createElement("button")
-  deleteButton.textContent = "Delete"
-  deleteButton.addEventListener("click", () => deleteFilter(filter, filterType))
-  li.appendChild(deleteButton)
-
-  if (filterType === "channel") {
-    channelFilterList.appendChild(li)
-  } else {
-    titleFilterList.appendChild(li)
-  }
-}

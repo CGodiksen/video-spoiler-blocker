@@ -19,8 +19,7 @@ addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "t
 
 // Add a filter to the display and storage if it does not already exist in storage.
 const addFilter = async (inputField, filterType) => {
-  const result = await browser.storage.local.get(filterType).catch(error => onError(error));
-  const existingFilters = (Object.keys(result).length !== 0) ? result[filterType] : []
+  const existingFilters = await getExistingsFilters(filterType)
 
   const filter = inputField.value;
 
@@ -52,17 +51,21 @@ const displayFilter = (filter, filterType) => {
 
 // Delete a single filter from storage and the display.
 const deleteFilter = async (filter, filterType, li) => {
-  const result = await browser.storage.local.get(filterType).catch(error => onError(error));
-  const existingFilters = result[filterType]
+  const existingFilters = await getExistingsFilters(filterType)
 
   await browser.storage.local.set({ [filterType]: existingFilters.filter(f => f !== filter) }).catch(error => onError(error));
   li.remove()
 }
 
+// Return a promise to deliver all filters of a specific type from local storage. 
+const getExistingsFilters = async (filterType) => {
+  const result = await browser.storage.local.get(filterType).catch(error => onError(error));
+  return (Object.keys(result).length !== 0) ? result[filterType] : []
+}
+
 // Show the already existing filters in the popup.
 const initialize = async (filterType) => {
-  const result = await browser.storage.local.get(filterType).catch(error => onError(error));
-  const existingFilters = (Object.keys(result).length !== 0) ? result[filterType] : []
+  const existingFilters = await getExistingsFilters(filterType)
 
   existingFilters.forEach(filter => displayFilter(filter, filterType))
 }

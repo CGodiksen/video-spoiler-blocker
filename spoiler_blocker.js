@@ -14,34 +14,34 @@ const blockPlayerSpoilers = async () => {
   const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
   const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
 
-  if (!(await titleBlocked(videoTitle)) && timeDisplay) {
+  if ((await titleBlocked(videoTitle)) && timeDisplay) {
     timeDisplay.remove()
   }
 
-  if (!(await channelBlocked(channelName)) && timeDisplay) {
+  if ((await channelBlocked(channelName)) && timeDisplay) {
     timeDisplay.remove()
   }
 }
 
 // Removing video length infomation from the bottom right of thumbnails if necessary.
-const blockThumbnailSpoilers = (pageType) => {
+const blockThumbnailSpoilers = async (pageType) => {
   const videos = getVideoElements(pageType)
 
-  videos.forEach(video => {
+  for (const video of videos) {
     try {
       const videoLength = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
       const metadata = getVideoMetadata(pageType, video)
 
-      if (metadata.title.includes("Queen") && videoLength) {
+      if ((await titleBlocked(metadata.title)) && videoLength) {
         videoLength.remove()
       }
-      if (metadata.channel === "Whitney Houston" && videoLength) {
+      if ((await channelBlocked(metadata.channel)) && videoLength) {
         videoLength.remove()
       }
     } catch (error) {
       console.error(error);
     }
-  })
+  }
 }
 
 // Return all video elements in the current document. These elements contain both the thumbnail and video metadata.

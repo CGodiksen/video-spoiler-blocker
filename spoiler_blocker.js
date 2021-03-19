@@ -8,11 +8,13 @@ const blockSpoilers = () => {
 }
 
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
-const blockPlayerSpoilers = () => {
+const blockPlayerSpoilers = async () => {
   const timeDisplay = document.getElementsByClassName("ytp-time-display notranslate")[0]
 
   const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
   const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
+
+  const channelFilters = await getExistingsFilters("channel")
 
   if (videoTitle.includes("Positive Mood") && timeDisplay) {
     timeDisplay.remove()
@@ -76,6 +78,13 @@ const getVideoMetadata = (pageType, video) => {
   }
 
   return { title: videoTitle, channel: channelName }
+}
+
+// Return true if the given title is blocked by any of the stored title filters.
+const titleBlocked = async (title) => {
+  const titleFilters = await getExistingsFilters("title")
+
+  return titleFilters.some(filter => title.toLowerCase().includes(filter.toLowerCase()))
 }
 
 // Return a promise to deliver all filters of a specific type from local storage. 

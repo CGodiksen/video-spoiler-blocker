@@ -18,24 +18,18 @@ addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter
 addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "title"))
 
 // Add a filter to the display and storage if it does not already exist in storage.
-const addFilter = (inputField, filterType) => {
+const addFilter = async (inputField, filterType) => {
+  const result = await browser.storage.local.get(filterType).catch(error => onError(error));
+  const existingFilters = (Object.keys(result).length !== 0) ? result[filterType] : []
+  
   const filter = inputField.value;
-  const gettingFilters = browser.storage.local.get(filterType);
+  
+  if (!existingFilters.includes(filter) && filter !== "") {
+    inputField.value = '';
 
-  gettingFilters
-    .then(result => {
-      const existingFilters = (Object.keys(result).length !== 0) ? result[filterType] : []
-
-      if (!existingFilters.includes(filter) && filter !== "") {
-        inputField.value = '';
-
-        const storingFilter = browser.storage.local.set({ [filterType]: existingFilters.concat(filter) });
-        storingFilter.then(() => displayFilter(filter, filterType))
-      }
-    })
-    .catch(error => {
-      onError(error)
-    });
+    await browser.storage.local.set({ [filterType]: existingFilters.concat(filter) }).catch(error => onError(error));
+    displayFilter(filter, filterType)
+  }
 }
 
 // Adding the filter to one of the unordered display lists based on the filter type.

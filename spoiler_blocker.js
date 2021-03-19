@@ -1,9 +1,9 @@
 const blockSpoilers = () => {
   if (window.location.href.includes("watch")) {
     blockPlayerSpoilers()
-    blockThumbnailSpoilers("style-scope ytd-compact-video-renderer", "span", "video-title")
+    blockThumbnailSpoilers("video")
   } else {
-    blockThumbnailSpoilers("style-scope ytd-rich-grid-media", "a", "video-title-link")
+    blockThumbnailSpoilers("home")
   }
 }
 
@@ -25,15 +25,8 @@ const blockPlayerSpoilers = () => {
 }
 
 // Removing video length infomation from the bottom right of thumbnails if necessary.
-const blockThumbnailSpoilers = (videoClassName, videoTitleTag, videoTitleId) => {
-  // Extracting every video on the page.
-  const grid_media = document.getElementsByClassName(videoClassName)
-  const videos = []
-  for (let i = 0; i < grid_media.length; i++) {
-    if (grid_media[i].id === "dismissible") {
-      videos.push(grid_media[i])
-    }
-  }
+const blockThumbnailSpoilers = (pageType) => {
+  const videos = getVideoElements(pageType)
 
   // Removing the video length on the thumbnail if the video title or channel name is blocked.
   videos.forEach(video => {
@@ -41,12 +34,12 @@ const blockThumbnailSpoilers = (videoClassName, videoTitleTag, videoTitleId) => 
       const videoLength = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
 
       const videoTitle = video.getElementsByTagName(videoTitleTag).namedItem(videoTitleId).title
-      console.log(videoTitle);
+
       if (videoTitle.includes("Dua Lipa") && videoLength) {
         videoLength.remove()
       }
 
-      const channelName = details.getElementsByTagName("a").namedItem("avatar-link").title
+      const channelName = video.getElementsByTagName("a").namedItem("avatar-link").title
       if (channelName === "Lounge" && videoLength) {
         videoLength.remove()
       }
@@ -55,5 +48,24 @@ const blockThumbnailSpoilers = (videoClassName, videoTitleTag, videoTitleId) => 
     }
   })
 }
+
+// Return all video elements in the current document. These elements contain both the thumbnail and video metadata.
+const getVideoElements = (pageType) => {
+  const className = (pageType === "home") ? "style-scope ytd-compact-video-renderer" : "style-scope ytd-rich-grid-media"
+  const grid_media = document.getElementsByClassName(className)
+
+  const videos = []
+  for (let i = 0; i < grid_media.length; i++) {
+    if (grid_media[i].id === "dismissible") {
+      videos.push(grid_media[i])
+    }
+  }
+
+  return videos
+}
+
+"style-scope ytd-compact-video-renderer", "span", "video-title"
+
+"style-scope ytd-rich-grid-media", "a", "video-title-link"
 
 blockSpoilers()

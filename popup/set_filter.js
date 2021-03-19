@@ -50,10 +50,10 @@ const storeFilter = (filter, filterType) => {
 }
 
 // Show the already existing filters in the popup.
-const initialize = (filter) => {
-  const gettingAllStorageItems = browser.storage.local.get(filter);
+const initialize = () => {
+  const gettingAllFilters = browser.storage.local.get(null);
 
-  gettingAllStorageItems
+  gettingAllFilters
     .then(results => {
       const keys = Object.keys(results);
 
@@ -66,8 +66,7 @@ const initialize = (filter) => {
     });
 }
 
-initialize("channel-filter");
-initialize("title-filter")
+initialize();
 
 // Adding the filter to one of the unordered display lists based on the filter type.
 const displayFilter = (filter, filterType) => {

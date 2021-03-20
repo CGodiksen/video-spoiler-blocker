@@ -9,7 +9,7 @@ function blockSpoilers() {
 
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
 async function blockPlayerSpoilers() {
-  const timeDisplay = document.getElementsByClassName("ytp-time-display notranslate")[0]
+  const timeDisplay = document.getElementsByClassName("ytp-time-duration")[0]
 
   const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
   const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
@@ -19,6 +19,9 @@ async function blockPlayerSpoilers() {
 
 // Removing video length infomation from the bottom right of thumbnails if necessary.
 async function blockThumbnailSpoilers(pageType) {
+  const titleFilters = await getExistingsFilters("title")
+  const channelFilters = await getExistingsFilters("channel")
+
   const videos = getVideoElements(pageType)
 
   for (const video of videos) {
@@ -26,7 +29,15 @@ async function blockThumbnailSpoilers(pageType) {
       const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
       const metadata = getVideoMetadata(pageType, video)
 
-      await removeBlocked(metadata.title, metadata.channel, timeDisplay)
+      const titleBlocked = titleFilters.some(filter => metadata.title.toLowerCase().includes(filter.toLowerCase()))
+      if (titleBlocked && timeDisplay) {
+        timeDisplay.remove()
+      }
+
+      const channelBlocked = channelFilters.some(filter => metadata.channel.toLowerCase() === filter.toLowerCase())
+      if (channelBlocked && timeDisplay) {
+        timeDisplay.remove()
+      }
     } catch (error) {
       console.error(error);
     }
@@ -65,29 +76,6 @@ function getVideoMetadata(pageType, video) {
   }
 
   return { title: videoTitle, channel: channelName }
-}
-
-// Remove the given time display if either its title or channel is blocked by the stored filters.
-async function removeBlocked(videoTitle, channelName, timeDisplay) {
-  const titleFilters = await getExistingsFilters("title")
-  const channelFilters = await getExistingsFilters("channel")
-
-  if (titleBlocked(videoTitle, titleFilters) && timeDisplay) {
-    timeDisplay.remove()
-  }
-  if (channelBlocked(channelName, channelFilters) && timeDisplay) {
-    timeDisplay.remove()
-  }
-}
-
-// Return true if the given title is blocked by any of the stored title filters.
-function titleBlocked(videoTitle, titleFilters) {
-  return titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))
-}
-
-// Return true if the given channel is blocked by any of the stores channel filters.
-function channelBlocked(channelName, channelFilters) {
-  channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
 }
 
 // Return a promise to deliver all filters of a specific type from local storage. 

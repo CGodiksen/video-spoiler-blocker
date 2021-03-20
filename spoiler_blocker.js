@@ -17,15 +17,7 @@ function blockPlayerSpoilers(titleFilters, channelFilters) {
   const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
   const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
 
-  const titleBlocked = titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))
-  if (titleBlocked && timeDisplay) {
-    timeDisplay.innerHTML = ""
-  }
-
-  const channelBlocked = channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
-  if (channelBlocked && timeDisplay) {
-    timeDisplay.innerHTML = ""
-  }
+  removeBlocked(titleFilters, videoTitle, channelFilters, channelName, timeDisplay, (time) => time.innerHTML = "")
 }
 
 // Removing video length infomation from the bottom right of thumbnails if necessary.
@@ -37,15 +29,7 @@ function blockThumbnailSpoilers(pageType, titleFilters, channelFilters) {
       const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
       const metadata = getVideoMetadata(pageType, video)
 
-      const titleBlocked = titleFilters.some(filter => metadata.title.toLowerCase().includes(filter.toLowerCase()))
-      if (titleBlocked && timeDisplay) {
-        timeDisplay.remove()
-      }
-
-      const channelBlocked = channelFilters.some(filter => metadata.channel.toLowerCase() === filter.toLowerCase())
-      if (channelBlocked && timeDisplay) {
-        timeDisplay.remove()
-      }
+      removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
     } catch (error) {
       console.error(error);
     }
@@ -84,6 +68,19 @@ function getVideoMetadata(pageType, video) {
   }
 
   return { title: videoTitle, channel: channelName }
+}
+
+// Remove the given time display with the callback if either its title or channel is blocked by the filters.
+function removeBlocked(titleFilters, videoTitle, channelFilters, channelName, timeDisplay, removeCallback) {
+  const titleBlocked = titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))
+  if (titleBlocked && timeDisplay) {
+    removeCallback(timeDisplay)
+  }
+
+  const channelBlocked = channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
+  if (channelBlocked && timeDisplay) {
+    removeCallback(timeDisplay)
+  }
 }
 
 // Return a promise to deliver all filters of a specific type from local storage. 

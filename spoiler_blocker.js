@@ -5,6 +5,8 @@ async function blockSpoilers() {
   if (window.location.href.includes("watch")) {
     blockPlayerSpoilers(titleFilters, channelFilters)
     blockThumbnailSpoilers("video", titleFilters, channelFilters)
+  } else if (window.location.href.includes("/c/")) {
+    blockThumbnailSpoilers("channel", titleFilters, channelFilters)
   } else {
     blockThumbnailSpoilers("home", titleFilters, channelFilters)
   }
@@ -23,7 +25,7 @@ function blockPlayerSpoilers(titleFilters, channelFilters) {
 // Removing video length infomation from the bottom right of thumbnails if necessary.
 function blockThumbnailSpoilers(pageType, titleFilters, channelFilters) {
   const videos = getVideoElements(pageType)
-
+  console.log(videos);
   for (const video of videos) {
     try {
       const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
@@ -38,7 +40,19 @@ function blockThumbnailSpoilers(pageType, titleFilters, channelFilters) {
 
 // Return all video elements in the current document. These elements contain both the thumbnail and video metadata.
 function getVideoElements(pageType) {
-  const className = (pageType === "home") ? "style-scope ytd-rich-grid-media" : "style-scope ytd-compact-video-renderer"
+  let className = ""
+
+  switch (pageType) {
+    case "home":
+      className = "style-scope ytd-rich-grid-media"
+      break;
+    case "video":
+      className = "style-scope ytd-compact-video-renderer"
+      break;
+    case "channel":
+      className = "style-scope ytd-grid-video-renderer"
+      break;
+  }
   const grid_media = document.getElementsByClassName(className)
 
   const videos = []
@@ -92,11 +106,11 @@ async function getExistingsFilters(filterType) {
 // Calling the block function when the video length information has loaded in.
 function blockWhenReady() {
   const timeDisplays = document.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer");
-
+  console.log(timeDisplays);
   if (timeDisplays.length > 1) {
     blockSpoilers()
   } else {
-    setTimeout(blockWhenReady, 100);
+    setTimeout(blockWhenReady, 200);
   }
 }
 

@@ -1,4 +1,4 @@
-const blockSpoilers = () => {
+function blockSpoilers() {
   if (window.location.href.includes("watch")) {
     blockPlayerSpoilers()
     blockThumbnailSpoilers("video")
@@ -8,7 +8,7 @@ const blockSpoilers = () => {
 }
 
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
-const blockPlayerSpoilers = async () => {
+async function blockPlayerSpoilers() {
   const timeDisplay = document.getElementsByClassName("ytp-time-display notranslate")[0]
 
   const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
@@ -18,7 +18,7 @@ const blockPlayerSpoilers = async () => {
 }
 
 // Removing video length infomation from the bottom right of thumbnails if necessary.
-const blockThumbnailSpoilers = async (pageType) => {
+async function blockThumbnailSpoilers(pageType) {
   const videos = getVideoElements(pageType)
 
   for (const video of videos) {
@@ -34,7 +34,7 @@ const blockThumbnailSpoilers = async (pageType) => {
 }
 
 // Return all video elements in the current document. These elements contain both the thumbnail and video metadata.
-const getVideoElements = (pageType) => {
+function getVideoElements(pageType) {
   const className = (pageType === "home") ? "style-scope ytd-rich-grid-media" : "style-scope ytd-compact-video-renderer"
   const grid_media = document.getElementsByClassName(className)
 
@@ -49,7 +49,7 @@ const getVideoElements = (pageType) => {
 }
 
 // Return an object containing the video title and channel for a video element.
-const getVideoMetadata = (pageType, video) => {
+function getVideoMetadata(pageType, video) {
   let videoTitle = ""
   let channelName = ""
 
@@ -68,10 +68,10 @@ const getVideoMetadata = (pageType, video) => {
 }
 
 // Remove the given time display if either its title or channel is blocked by the stored filters.
-const removeBlocked = async (videoTitle, channelName, timeDisplay) => {
+async function removeBlocked(videoTitle, channelName, timeDisplay) {
   const titleFilters = await getExistingsFilters("title")
   const channelFilters = await getExistingsFilters("channel")
-  
+
   if (titleBlocked(videoTitle, titleFilters) && timeDisplay) {
     timeDisplay.remove()
   }
@@ -81,27 +81,29 @@ const removeBlocked = async (videoTitle, channelName, timeDisplay) => {
 }
 
 // Return true if the given title is blocked by any of the stored title filters.
-const titleBlocked = (videoTitle, titleFilters) => titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))
+function titleBlocked(videoTitle, titleFilters) {
+  return titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))
+}
 
 // Return true if the given channel is blocked by any of the stores channel filters.
-const channelBlocked = (channelName, channelFilters) => channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
+function channelBlocked(channelName, channelFilters) {
+  channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
+}
 
 // Return a promise to deliver all filters of a specific type from local storage. 
-const getExistingsFilters = async (filterType) => {
+async function getExistingsFilters(filterType) {
   const result = await browser.storage.local.get(filterType).catch(error => onError(error));
   return (Object.keys(result).length !== 0) ? result[filterType] : []
 }
 
 // Calling the block function when the video length information has loaded in.
-const blockWhenReady = () => {
+function blockWhenReady() {
   const timeDisplays = document.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer");
-  
-  if (timeDisplays.length > 0) {
-    console.log("Ready");
+
+  if (timeDisplays.length > 1) {
     blockSpoilers()
   } else {
-    console.log("Not ready");
-    setTimeout(blockWhenReady, 500);
+    setTimeout(blockWhenReady, 100);
   }
 }
 

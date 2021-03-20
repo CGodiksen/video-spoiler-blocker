@@ -1,27 +1,30 @@
-function blockSpoilers() {
+async function blockSpoilers() {
+  const titleFilters = await getExistingsFilters("title")
+  const channelFilters = await getExistingsFilters("channel")
+  
   if (window.location.href.includes("watch")) {
-    blockPlayerSpoilers()
-    blockThumbnailSpoilers("video")
+    blockPlayerSpoilers(titleFilters, channelFilters)
+    blockThumbnailSpoilers("video", titleFilters, channelFilters)
   } else {
-    blockThumbnailSpoilers("home")
+    blockThumbnailSpoilers("home", titleFilters, channelFilters)
   }
 }
 
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
-async function blockPlayerSpoilers() {
+function blockPlayerSpoilers(titleFilters, channelFilters) {
   const timeDisplay = document.getElementsByClassName("ytp-time-duration")[0]
 
   const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
   const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
 
-  await removeBlocked(videoTitle, channelName, timeDisplay)
+  const titleBlocked = titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))
+  if (titleBlocked && timeDisplay) {
+    timeDisplay.remove()
+  }
 }
 
 // Removing video length infomation from the bottom right of thumbnails if necessary.
-async function blockThumbnailSpoilers(pageType) {
-  const titleFilters = await getExistingsFilters("title")
-  const channelFilters = await getExistingsFilters("channel")
-
+function blockThumbnailSpoilers(pageType, titleFilters, channelFilters) {
   const videos = getVideoElements(pageType)
 
   for (const video of videos) {

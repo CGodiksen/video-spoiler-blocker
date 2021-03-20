@@ -92,4 +92,17 @@ const getExistingsFilters = async (filterType) => {
   return (Object.keys(result).length !== 0) ? result[filterType] : []
 }
 
-blockSpoilers()
+// Calling the block function when the video length information has loaded in.
+const blockWhenReady = () => {
+  const timeDisplays = document.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer");
+  
+  if (timeDisplays.length > 0) {
+    console.log("Ready");
+    blockSpoilers()
+  } else {
+    console.log("Not ready");
+    setTimeout(blockWhenReady, 500);
+  }
+}
+
+blockWhenReady()

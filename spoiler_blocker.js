@@ -1,7 +1,7 @@
 async function blockSpoilers() {
   const titleFilters = await getExistingsFilters("title")
   const channelFilters = await getExistingsFilters("channel")
-  
+
   if (window.location.href.includes("watch")) {
     blockPlayerSpoilers(titleFilters, channelFilters)
     blockThumbnailSpoilers("video", titleFilters, channelFilters)

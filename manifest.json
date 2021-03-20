@@ -12,6 +12,7 @@
 
   "permissions": [
     "tabs",
+    "webRequest",
     "storage",
     "*://*.youtube.com/*"
   ],

@@ -19,7 +19,12 @@ function blockPlayerSpoilers(titleFilters, channelFilters) {
 
   const titleBlocked = titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))
   if (titleBlocked && timeDisplay) {
-    timeDisplay.remove()
+    timeDisplay.innerHTML = ""
+  }
+
+  const channelBlocked = channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
+  if (channelBlocked && timeDisplay) {
+    timeDisplay.innerHTML = ""
   }
 }
 

@@ -1,11 +1,3 @@
-browser.tabs.onUpdated.addListener(() => {
-  requestBlock()
-});
-
-browser.webRequest.onCompleted.addListener((_details) => {
-  setTimeout(() => requestBlock(), 1000);
-}, { urls: ["*://*.youtube.com/*"] })
-
 // This is used to avoid duplicating the "requestBlock" definition in "set_filter.js".
 browser.runtime.onMessage.addListener(request => {
   if (request.requestBlock) {

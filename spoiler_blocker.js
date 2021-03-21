@@ -136,7 +136,7 @@ const observer = new MutationObserver((mutationsList, _observer) => {
     if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
       mutation.addedNodes.forEach((node) => {
         if (node.nodeName.toLowerCase() === "ytd-thumbnail-overlay-time-status-renderer") {
-          console.log(node);
+          blockSpoilers()
         }
       })
     }

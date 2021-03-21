@@ -2,10 +2,11 @@ async function blockSpoilers() {
   const titleFilters = await getExistingsFilters("title")
   const channelFilters = await getExistingsFilters("channel")
 
-  if (window.location.href.includes("/watch?")) {
+  const url = window.location.href
+  if (url.includes("/watch?")) {
     blockPlayerSpoilers(titleFilters, channelFilters)
     blockThumbnailSpoilers("video", titleFilters, channelFilters)
-  } else if (window.location.href.includes("/c/") || window.location.href.includes("/channel/")) {
+  } else if (url.includes("/c/") || url.includes("/channel/"), url.includes("/user/")) {
     blockThumbnailSpoilers("channel", titleFilters, channelFilters)
   } else {
     blockThumbnailSpoilers("home", titleFilters, channelFilters)

@@ -66,13 +66,11 @@ const getVideoMetadata = (pageType, video) => {
 
 // Remove the given time display with the callback if either its title or channel is blocked by the filters.
 const removeBlocked = (titleFilters, videoTitle, channelFilters, channelName, timeDisplay, removeCallback) => {
-  const titleBlocked = titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))
-  if (titleBlocked && timeDisplay) {
+  if (titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))) {
     removeCallback(timeDisplay)
   }
 
-  const channelBlocked = channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
-  if (channelBlocked && timeDisplay) {
+  if (channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())) {
     removeCallback(timeDisplay)
   }
 }

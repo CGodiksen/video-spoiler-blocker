@@ -3,15 +3,6 @@ const blockSpoiler = async (video, timeDisplay) => {
   const titleFilters = await getExistingsFilters("title")
   const channelFilters = await getExistingsFilters("channel")
 
-  const url = window.location.href
-  if (url.includes("/watch?")) {
-    blockPlayerSpoilers(titleFilters, channelFilters)
-    blockThumbnailSpoiler("video", video, timeDisplay, titleFilters, channelFilters)
-  } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
-    blockThumbnailSpoiler("channel", video, timeDisplay, titleFilters, channelFilters)
-  } else {
-    blockThumbnailSpoiler("home", video, timeDisplay, titleFilters, channelFilters)
-  }
 }
 
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
@@ -24,8 +15,10 @@ const blockPlayerSpoilers = (titleFilters, channelFilters) => {
   removeBlocked(titleFilters, videoTitle, channelFilters, channelName, timeDisplay, (time) => time.innerHTML = "")
 }
 
-// Removing video length infomation from the bottom right of thumbnails if necessary.
-const blockThumbnailSpoiler = (pageType, video, timeDisplay, titleFilters, channelFilters) => {
+// Removing video length infomation from the bottom right of a thumbnail if necessary.
+const blockThumbnailSpoiler = (video, timeDisplay, titleFilters, channelFilters) => {
+  const pageType = getPageType()
+  
   try {
     const metadata = getVideoMetadata(pageType, video)
     console.log(metadata);
@@ -33,6 +26,18 @@ const blockThumbnailSpoiler = (pageType, video, timeDisplay, titleFilters, chann
     removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
   } catch (error) {
     console.error(error);
+  }
+}
+
+const getPageType = () => {
+  const url = window.location.href
+  
+  if (url.includes("/watch?")) {
+    return "video"
+  } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
+    return "channel"
+  } else {
+    return "home"
   }
 }
 

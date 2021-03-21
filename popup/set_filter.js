@@ -40,16 +40,7 @@ const addFilter = async (inputField, filterType) => {
     await browser.storage.local.set({ [filterType]: existingFilters.concat(filter) }).catch(error => onError(error));
     displayFilter(filter, filterType)
 
-    requestBlock(filterType)
-  }
-}
-
-// Send a message to all Youtube tabs notifying them that they should block spoilers again.
-const requestBlock = async () => {
-  const tabs = await browser.tabs.query({ url: "*://*.youtube.com/*" })
-
-  for (const tab of tabs) {
-    browser.tabs.sendMessage(tab.id, { blockSpoilers: true })
+    browser.runtime.sendMessage({ requestBlock: true })
   }
 }
 

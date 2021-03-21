@@ -1,12 +1,19 @@
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
 const blockPlayerSpoiler = async () => {
-  const [titleFilters, channelFilters] = await getExistingsFilters()
-  const timeDisplay = document.getElementsByClassName("ytp-time-duration")[0]
+  try {
+    const timeDisplay = document.getElementsByClassName("ytp-time-duration")[0]
 
-  const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
-  const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
+    if (timeDisplay && timeDisplay.innerHTML) {
+      const [titleFilters, channelFilters] = await getExistingsFilters()
 
-  removeBlocked(titleFilters, videoTitle, channelFilters, channelName, timeDisplay, (time) => time.innerHTML = "")
+      const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
+      const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
+
+      removeBlocked(titleFilters, videoTitle, channelFilters, channelName, timeDisplay, (time) => time.innerHTML = "")
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // Removing video length infomation from the bottom right of a thumbnail if necessary.
@@ -89,7 +96,9 @@ const observer = new MutationObserver((mutationList, _observer) => {
         if (node.nodeName.toLowerCase() === "ytd-thumbnail-overlay-time-status-renderer") {
           // Going up the tree through the parents to find the corresponding video.
           const video = node.parentNode.parentNode.parentNode.parentNode
+          
           blockThumbnailSpoiler(video, node)
+          blockPlayerSpoiler()
         }
       })
     }
@@ -142,8 +151,5 @@ const getVideoElements = (pageType) => {
 browser.runtime.onMessage.addListener(request => {
   if (request.blockSpoilers) {
     blockSpoilers()
-  }
-  if (request.blockPlayerSpoiler) {
-    blockPlayerSpoiler()
   }
 });

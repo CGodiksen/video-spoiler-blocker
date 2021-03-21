@@ -1,4 +1,4 @@
-const blockSpoilers = async () => {
+const blockSpoiler = async (video, timeDisplay) => {
   console.log("Blocking spoilers");
   const titleFilters = await getExistingsFilters("title")
   const channelFilters = await getExistingsFilters("channel")
@@ -6,11 +6,11 @@ const blockSpoilers = async () => {
   const url = window.location.href
   if (url.includes("/watch?")) {
     blockPlayerSpoilers(titleFilters, channelFilters)
-    blockThumbnailSpoilers("video", titleFilters, channelFilters)
+    blockThumbnailSpoiler("video", video, timeDisplay, titleFilters, channelFilters)
   } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
-    blockThumbnailSpoilers("channel", titleFilters, channelFilters)
+    blockThumbnailSpoiler("channel", video, timeDisplay, titleFilters, channelFilters)
   } else {
-    blockThumbnailSpoilers("home", titleFilters, channelFilters)
+    blockThumbnailSpoiler("home", video, timeDisplay, titleFilters, channelFilters)
   }
 }
 
@@ -25,18 +25,14 @@ const blockPlayerSpoilers = (titleFilters, channelFilters) => {
 }
 
 // Removing video length infomation from the bottom right of thumbnails if necessary.
-const blockThumbnailSpoilers = (pageType, titleFilters, channelFilters) => {
-  const videos = getVideoElements(pageType)
+const blockThumbnailSpoiler = (pageType, video, timeDisplay, titleFilters, channelFilters) => {
+  try {
+    const metadata = getVideoMetadata(pageType, video)
+    console.log(metadata);
 
-  for (const video of videos) {
-    try {
-      const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
-      const metadata = getVideoMetadata(pageType, video)
-
-      removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
-    } catch (error) {
-      console.error(error);
-    }
+    removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
+  } catch (error) {
+    console.error(error);
   }
 }
 
@@ -113,7 +109,7 @@ const getExistingsFilters = async (filterType) => {
 // Blocking spoilers when the browser action requests it.
 browser.runtime.onMessage.addListener(request => {
   if (request.blockSpoilers) {
-    blockSpoilers()
+    blockSpoiler()
   }
 });
 
@@ -122,13 +118,15 @@ const observer = new MutationObserver((mutationList, _observer) => {
   mutationList.forEach(mutation => {
     if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
       mutation.addedNodes.forEach((node) => {
+        // If the new node is a video length then check if it should be blocked.
         if (node.nodeName.toLowerCase() === "ytd-thumbnail-overlay-time-status-renderer") {
-          blockSpoilers()
+          // Going up the tree through the parents to find the corresponding video.
+          const video = node.parentNode.parentNode.parentNode.parentNode
+          blockSpoiler(video, node)
         }
       })
     }
   })
 });
 
-// Start observing the target node for configured mutations
 observer.observe(document, { childList: true, subtree: true });

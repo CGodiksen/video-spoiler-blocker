@@ -4,8 +4,8 @@ const onError = (error) => {
 }
 
 // Initialize elements from the popup html file.
-const inputChannelFilter = document.querySelector("div.popup-content input[name='channel-filter']");
-const inputTitleFilter = document.querySelector("div.popup-content input[name='title-filter']");
+const channelFilterInput = document.querySelector("div.popup-content input[name='channel-filter']");
+const titleFilterInput = document.querySelector("div.popup-content input[name='title-filter']");
 
 const channelFilterList = document.querySelector("ul.channel-filter-list");
 const titleFilterList = document.querySelector("ul.title-filter-list")
@@ -14,8 +14,8 @@ const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
 
 // Add event listeners to buttons.
-addChannelFilterBtn.addEventListener("click", () => addFilter(inputChannelFilter, "channel"))
-addTitleFilterBtn.addEventListener("click", () => addFilter(inputTitleFilter, "title"))
+addChannelFilterBtn.addEventListener("click", () => addFilter(channelFilterInput, "channel"))
+addTitleFilterBtn.addEventListener("click", () => addFilter(titleFilterInput, "title"))
 
 // Add a filter to the display and storage if it does not already exist in storage.
 const addFilter = async (inputField, filterType) => {

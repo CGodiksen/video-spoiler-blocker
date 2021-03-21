@@ -123,16 +123,16 @@ const blockWhenReady = () => {
 
 blockWhenReady()
 
-// Blocking spoilers when the background script or browser action requests it.
+// Blocking spoilers when the browser action requests it.
 browser.runtime.onMessage.addListener(request => {
   if (request.blockSpoilers) {
     blockSpoilers()
   }
 });
 
-// Create an observer instance linked to the callback function
-const observer = new MutationObserver((mutationsList, _observer) => {
-  mutationsList.forEach(mutation => {
+// Create an observer that blocks spoilers each time a new time display is added to the DOM.
+const observer = new MutationObserver((mutationList, _observer) => {
+  mutationList.forEach(mutation => {
     if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
       mutation.addedNodes.forEach((node) => {
         if (node.nodeName.toLowerCase() === "ytd-thumbnail-overlay-time-status-renderer") {
@@ -144,4 +144,4 @@ const observer = new MutationObserver((mutationsList, _observer) => {
 });
 
 // Start observing the target node for configured mutations
-observer.observe(document, { attributes: true, childList: true, subtree: true });
+observer.observe(document, { childList: true, subtree: true });

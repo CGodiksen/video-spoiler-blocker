@@ -17,6 +17,17 @@ const addTitleFilterBtn = document.querySelector('.add-title-filter');
 addChannelFilterBtn.addEventListener("click", () => addFilter(channelFilterInput, "channel"))
 addTitleFilterBtn.addEventListener("click", () => addFilter(titleFilterInput, "title"))
 
+// Adding filter if the enter key is pressed while a text input is active.
+document.addEventListener("keyup", event => {
+  const active = document.activeElement
+
+  if (active.name === "channel-filter" && event.key === "Enter") {
+    addFilter(channelFilterInput, "channel")
+  } else if (active.name === "title-filter" && event.key === "Enter") {
+    addFilter(titleFilterInput, "title")
+  }
+})
+
 // Add a filter to the display and storage if it does not already exist in storage.
 const addFilter = async (inputField, filterType) => {
   const existingFilters = await getExistingsFilters(filterType)

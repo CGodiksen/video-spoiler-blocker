@@ -1,51 +1,3 @@
-// Check all videos in the current document for spoilers and block them if any are found.
-const blockSpoilers = async () => {
-  const pageType = getPageType()
-  const videos = getVideoElements(pageType)
-
-  for (const video of videos) {
-    const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
-
-    if (timeDisplay) {
-      blockThumbnailSpoiler(video, timeDisplay)
-    }
-  }
-}
-
-// Return all video elements in the current document. These elements contain both the thumbnail and video metadata.
-const getVideoElements = (pageType) => {
-  let className = ""
-
-  switch (pageType) {
-    case "home":
-      className = "style-scope ytd-rich-grid-media"
-      break;
-    case "video":
-      className = "style-scope ytd-compact-video-renderer"
-      break;
-    case "channel":
-      className = "style-scope ytd-grid-video-renderer"
-      break;
-  }
-  const grid_media = document.getElementsByClassName(className)
-
-  const videos = []
-  for (let i = 0; i < grid_media.length; i++) {
-    if (grid_media[i].id === "dismissible") {
-      videos.push(grid_media[i])
-    }
-  }
-
-  return videos
-}
-
-// Blocking spoilers when the browser action requests it.
-browser.runtime.onMessage.addListener(request => {
-  if (request.blockSpoilers) {
-    blockSpoilers()
-  }
-});
-
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
 const blockPlayerSpoiler = (titleFilters, channelFilters) => {
   const timeDisplay = document.getElementsByClassName("ytp-time-duration")[0]
@@ -139,3 +91,50 @@ const observer = new MutationObserver((mutationList, _observer) => {
 });
 
 observer.observe(document, { childList: true, subtree: true });
+
+// Check all videos in the current document for spoilers and block them if any are found. Used by browser action when new filters are added.
+const blockSpoilers = async () => {
+  const pageType = getPageType()
+  const videos = getVideoElements(pageType)
+
+  for (const video of videos) {
+    const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
+
+    if (timeDisplay) {
+      blockThumbnailSpoiler(video, timeDisplay)
+    }
+  }
+}
+
+// Return all video elements in the current document. These elements contain both the thumbnail and video metadata. 
+const getVideoElements = (pageType) => {
+  let className = ""
+
+  switch (pageType) {
+    case "home":
+      className = "style-scope ytd-rich-grid-media"
+      break;
+    case "video":
+      className = "style-scope ytd-compact-video-renderer"
+      break;
+    case "channel":
+      className = "style-scope ytd-grid-video-renderer"
+      break;
+  }
+  const grid_media = document.getElementsByClassName(className)
+
+  const videos = []
+  for (let i = 0; i < grid_media.length; i++) {
+    if (grid_media[i].id === "dismissible") {
+      videos.push(grid_media[i])
+    }
+  }
+
+  return videos
+}
+
+browser.runtime.onMessage.addListener(request => {
+  if (request.blockSpoilers) {
+    blockSpoilers()
+  }
+});

@@ -28,15 +28,6 @@ document.addEventListener("keyup", event => {
   }
 })
 
-// Send a message to all Youtube tabs notifying them that the filters have been changed.
-const notifyTabs = async (updatedFilter) => {
-  const tabs = await browser.tabs.query({ url: "*://*.youtube.com/*" })
-
-  for (const tab of tabs) {
-    browser.tabs.sendMessage(tab.id, { update: updatedFilter })
-  }
-}
-
 // Add a filter to the display and storage if it does not already exist in storage.
 const addFilter = async (inputField, filterType) => {
   const existingFilters = await getExistingsFilters(filterType)
@@ -48,6 +39,17 @@ const addFilter = async (inputField, filterType) => {
 
     await browser.storage.local.set({ [filterType]: existingFilters.concat(filter) }).catch(error => onError(error));
     displayFilter(filter, filterType)
+
+    notifyTabs(filterType)
+  }
+}
+
+// Send a message to all Youtube tabs notifying them that the filters have been changed.
+const notifyTabs = async (updatedFilter) => {
+  const tabs = await browser.tabs.query({ url: "*://*.youtube.com/*" })
+
+  for (const tab of tabs) {
+    browser.tabs.sendMessage(tab.id, { update: updatedFilter })
   }
 }
 

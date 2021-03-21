@@ -1,3 +1,8 @@
+browser.runtime.onMessage.addListener(request => {
+  console.log("Message from the background script:");
+  console.log(request.update);
+});
+
 async function blockSpoilers() {
   const titleFilters = await getExistingsFilters("title")
   const channelFilters = await getExistingsFilters("channel")

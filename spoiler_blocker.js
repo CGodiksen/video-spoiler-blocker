@@ -140,4 +140,7 @@ browser.runtime.onMessage.addListener(request => {
   if (request.blockSpoilers) {
     blockSpoilers()
   }
+  if (request.blockPlayerSpoiler) {
+    console.log(request);
+  }
 });

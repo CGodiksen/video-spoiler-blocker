@@ -12,7 +12,6 @@
 
   "permissions": [
     "tabs",
-    "webRequest",
     "storage",
     "*://*.youtube.com/*"
   ],
@@ -23,7 +22,11 @@
       "js": ["spoiler_blocker.js"]
     }
   ],
-  
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
   "browser_action": {
     "default_icon": "icons/block_36.png",
     "default_title": "Video Spoiler Blocker",

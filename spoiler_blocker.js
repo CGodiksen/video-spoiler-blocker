@@ -2,10 +2,10 @@ async function blockSpoilers() {
   const titleFilters = await getExistingsFilters("title")
   const channelFilters = await getExistingsFilters("channel")
 
-  if (window.location.href.includes("watch")) {
+  if (window.location.href.includes("/watch?")) {
     blockPlayerSpoilers(titleFilters, channelFilters)
     blockThumbnailSpoilers("video", titleFilters, channelFilters)
-  } else if (window.location.href.includes("/c/")) {
+  } else if (window.location.href.includes("/c/") || window.location.href.includes("/channel/")) {
     blockThumbnailSpoilers("channel", titleFilters, channelFilters)
   } else {
     blockThumbnailSpoilers("home", titleFilters, channelFilters)
@@ -25,7 +25,7 @@ function blockPlayerSpoilers(titleFilters, channelFilters) {
 // Removing video length infomation from the bottom right of thumbnails if necessary.
 function blockThumbnailSpoilers(pageType, titleFilters, channelFilters) {
   const videos = getVideoElements(pageType)
-  console.log(videos);
+
   for (const video of videos) {
     try {
       const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
@@ -106,7 +106,7 @@ async function getExistingsFilters(filterType) {
 // Calling the block function when the video length information has loaded in.
 function blockWhenReady() {
   const timeDisplays = document.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer");
-  console.log(timeDisplays);
+
   if (timeDisplays.length > 1) {
     blockSpoilers()
   } else {

@@ -44,12 +44,12 @@ const addFilter = async (inputField, filterType) => {
   }
 }
 
-// Send a message to all Youtube tabs notifying them that the filters have been changed.
-const notifyTabs = async (updatedFilter) => {
+// Send a message to all Youtube tabs notifying them that they should block spoilers again.
+const notifyTabs = async () => {
   const tabs = await browser.tabs.query({ url: "*://*.youtube.com/*" })
 
   for (const tab of tabs) {
-    browser.tabs.sendMessage(tab.id, { update: updatedFilter })
+    browser.tabs.sendMessage(tab.id, { blockSpoilers: true })
   }
 }
 

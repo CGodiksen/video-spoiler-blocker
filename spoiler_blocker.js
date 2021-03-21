@@ -1,9 +1,3 @@
-browser.runtime.onMessage.addListener(request => {
-  if (request.update) {
-    blockSpoilers()
-  }
-});
-
 async function blockSpoilers() {
   const titleFilters = await getExistingsFilters("title")
   const channelFilters = await getExistingsFilters("channel")
@@ -128,3 +122,9 @@ function blockWhenReady() {
 }
 
 blockWhenReady()
+
+browser.runtime.onMessage.addListener(request => {
+  if (request.blockSpoilers) {
+    blockSpoilers()
+  }
+});

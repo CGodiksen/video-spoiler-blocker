@@ -1,13 +1,13 @@
 browser.tabs.onUpdated.addListener(() => {
-  browser.tabs.executeScript(null, { file: "spoiler_blocker.js" })
+  requestBlock()
 });
 
 browser.webRequest.onCompleted.addListener((_details) => {
-  setTimeout(() => browser.tabs.executeScript(null, { file: "spoiler_blocker.js" }), 1000);
+  setTimeout(() => requestBlock(), 1000);
 }, { urls: ["*://*.youtube.com/*"] })
 
-// Send a message to all Youtube tabs notifying them that the filters have been changed.
-const notifyTabs = async () => {
+// Send a message to all Youtube tabs notifying them that they should block spoilers.
+const requestBlock = async () => {
   const tabs = await browser.tabs.query({ url: "*://*.youtube.com/*" })
 
   for (const tab of tabs) {

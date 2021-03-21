@@ -1,4 +1,5 @@
 async function blockSpoilers() {
+  console.log("Blocking spoilers");
   const titleFilters = await getExistingsFilters("title")
   const channelFilters = await getExistingsFilters("channel")
 
@@ -114,7 +115,6 @@ function blockWhenReady() {
   const timeDisplays = document.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer");
 
   if (timeDisplays.length > 1) {
-    console.log("Blocking spoilers");
     blockSpoilers()
   } else {
     setTimeout(blockWhenReady, 200);

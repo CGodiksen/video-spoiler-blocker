@@ -10,13 +10,22 @@ const blockPlayerSpoiler = (titleFilters, channelFilters) => {
 
 // Removing video length infomation from the bottom right of a thumbnail if necessary.
 const blockThumbnailSpoiler = async (video, timeDisplay) => {
-  const titleFilters = await getExistingsFilters("title")
-  const channelFilters = await getExistingsFilters("channel")
+  const [titleFilters, channelFilters] = await getExistingsFilters()
 
   const pageType = getPageType()
   const metadata = getVideoMetadata(pageType, video)
 
   removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
+}
+
+// Return a promise to deliver all filters from local storage. 
+const getExistingsFilters = async () => {
+  const result = await browser.storage.local.get(null).catch(error => onError(error));
+  
+  const titleFilters = (Object.keys(result).length !== 0) ? result["title"] : []
+  const channelFilters = (Object.keys(result).length !== 0) ? result["channel"] : []
+  
+  return [titleFilters, channelFilters]
 }
 
 const getPageType = () => {
@@ -66,12 +75,6 @@ const removeBlocked = (titleFilters, videoTitle, channelFilters, channelName, ti
   if (channelBlocked && timeDisplay) {
     removeCallback(timeDisplay)
   }
-}
-
-// Return a promise to deliver all filters of a specific type from local storage. 
-const getExistingsFilters = async (filterType) => {
-  const result = await browser.storage.local.get(filterType).catch(error => onError(error));
-  return (Object.keys(result).length !== 0) ? result[filterType] : []
 }
 
 // Create an observer that blocks spoilers each time a new time display is added to the DOM.

@@ -41,7 +41,7 @@ const blockThumbnailSpoilers = (pageType, titleFilters, channelFilters) => {
 }
 
 // Return all video elements in the current document. These elements contain both the thumbnail and video metadata.
-const getVideoElements= (pageType) => {
+const getVideoElements = (pageType) => {
   let className = ""
 
   switch (pageType) {
@@ -129,3 +129,26 @@ browser.runtime.onMessage.addListener(request => {
     blockSpoilers()
   }
 });
+
+// Callback function to execute when mutations are observed
+const callback = function (mutationsList, observer) {
+  // Use traditional 'for loops' for IE 11
+  for (const mutation of mutationsList) {
+    if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeName.toLowerCase() === "ytd-thumbnail-overlay-time-status-renderer") {
+          console.log(node);
+        }
+      })
+    }
+  }
+};
+
+// Create an observer instance linked to the callback function
+const observer = new MutationObserver(callback);
+
+// Options for the observer (which mutations to observe)
+const config = { attributes: true, childList: true, subtree: true };
+
+// Start observing the target node for configured mutations
+observer.observe(document, config);

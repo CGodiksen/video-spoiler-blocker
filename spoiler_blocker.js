@@ -1,9 +1,9 @@
-const blockSpoiler = async (video, timeDisplay) => {
-  console.log("Blocking spoilers");
-  const titleFilters = await getExistingsFilters("title")
-  const channelFilters = await getExistingsFilters("channel")
+// const blockSpoiler = async (video, timeDisplay) => {
+//   console.log("Blocking spoilers");
+//   const titleFilters = await getExistingsFilters("title")
+//   const channelFilters = await getExistingsFilters("channel")
 
-}
+// }
 
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
 const blockPlayerSpoilers = (titleFilters, channelFilters) => {
@@ -16,22 +16,19 @@ const blockPlayerSpoilers = (titleFilters, channelFilters) => {
 }
 
 // Removing video length infomation from the bottom right of a thumbnail if necessary.
-const blockThumbnailSpoiler = (video, timeDisplay, titleFilters, channelFilters) => {
-  const pageType = getPageType()
+const blockThumbnailSpoiler = async (video, timeDisplay) => {
+  const titleFilters = await getExistingsFilters("title")
+  const channelFilters = await getExistingsFilters("channel")
   
-  try {
-    const metadata = getVideoMetadata(pageType, video)
-    console.log(metadata);
+  const pageType = getPageType()
+  const metadata = getVideoMetadata(pageType, video)
 
-    removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
-  } catch (error) {
-    console.error(error);
-  }
+  removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
 }
 
 const getPageType = () => {
   const url = window.location.href
-  
+
   if (url.includes("/watch?")) {
     return "video"
   } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
@@ -127,7 +124,7 @@ const observer = new MutationObserver((mutationList, _observer) => {
         if (node.nodeName.toLowerCase() === "ytd-thumbnail-overlay-time-status-renderer") {
           // Going up the tree through the parents to find the corresponding video.
           const video = node.parentNode.parentNode.parentNode.parentNode
-          blockSpoiler(video, node)
+          blockThumbnailSpoiler(video, node)
         }
       })
     }

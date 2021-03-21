@@ -1,40 +1,14 @@
-// const blockSpoiler = async (video, timeDisplay) => {
-//   console.log("Blocking spoilers");
-//   const titleFilters = await getExistingsFilters("title")
-//   const channelFilters = await getExistingsFilters("channel")
-
-// }
-
-// Removing video length infomation from the bottom left of the Youtube player if necessary. 
-const blockPlayerSpoilers = (titleFilters, channelFilters) => {
-  const timeDisplay = document.getElementsByClassName("ytp-time-duration")[0]
-
-  const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
-  const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
-
-  removeBlocked(titleFilters, videoTitle, channelFilters, channelName, timeDisplay, (time) => time.innerHTML = "")
-}
-
-// Removing video length infomation from the bottom right of a thumbnail if necessary.
-const blockThumbnailSpoiler = async (video, timeDisplay) => {
-  const titleFilters = await getExistingsFilters("title")
-  const channelFilters = await getExistingsFilters("channel")
-  
+// Check all videos in the current document for spoilers and block them if any are found.
+const blockSpoilers = async () => {
   const pageType = getPageType()
-  const metadata = getVideoMetadata(pageType, video)
+  const videos = getVideoElements(pageType)
 
-  removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
-}
+  for (const video of videos) {
+    const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
 
-const getPageType = () => {
-  const url = window.location.href
-
-  if (url.includes("/watch?")) {
-    return "video"
-  } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
-    return "channel"
-  } else {
-    return "home"
+    if (timeDisplay) {
+      blockThumbnailSpoiler(video, timeDisplay)
+    }
   }
 }
 
@@ -63,6 +37,46 @@ const getVideoElements = (pageType) => {
   }
 
   return videos
+}
+
+// Blocking spoilers when the browser action requests it.
+browser.runtime.onMessage.addListener(request => {
+  if (request.blockSpoilers) {
+    blockSpoilers()
+  }
+});
+
+// Removing video length infomation from the bottom left of the Youtube player if necessary. 
+const blockPlayerSpoiler = (titleFilters, channelFilters) => {
+  const timeDisplay = document.getElementsByClassName("ytp-time-duration")[0]
+
+  const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
+  const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
+
+  removeBlocked(titleFilters, videoTitle, channelFilters, channelName, timeDisplay, (time) => time.innerHTML = "")
+}
+
+// Removing video length infomation from the bottom right of a thumbnail if necessary.
+const blockThumbnailSpoiler = async (video, timeDisplay) => {
+  const titleFilters = await getExistingsFilters("title")
+  const channelFilters = await getExistingsFilters("channel")
+
+  const pageType = getPageType()
+  const metadata = getVideoMetadata(pageType, video)
+
+  removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
+}
+
+const getPageType = () => {
+  const url = window.location.href
+
+  if (url.includes("/watch?")) {
+    return "video"
+  } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
+    return "channel"
+  } else {
+    return "home"
+  }
 }
 
 // Return an object containing the video title and channel for a video element.
@@ -107,13 +121,6 @@ const getExistingsFilters = async (filterType) => {
   const result = await browser.storage.local.get(filterType).catch(error => onError(error));
   return (Object.keys(result).length !== 0) ? result[filterType] : []
 }
-
-// Blocking spoilers when the browser action requests it.
-browser.runtime.onMessage.addListener(request => {
-  if (request.blockSpoilers) {
-    blockSpoiler()
-  }
-});
 
 // Create an observer that blocks spoilers each time a new time display is added to the DOM.
 const observer = new MutationObserver((mutationList, _observer) => {

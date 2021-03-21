@@ -1,6 +1,7 @@
 browser.runtime.onMessage.addListener(request => {
-  console.log("Message from the background script:");
-  console.log(request.update);
+  if (request.update) {
+    blockSpoilers()
+  }
 });
 
 async function blockSpoilers() {

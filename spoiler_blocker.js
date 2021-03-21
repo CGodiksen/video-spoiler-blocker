@@ -6,7 +6,7 @@ async function blockSpoilers() {
   if (url.includes("/watch?")) {
     blockPlayerSpoilers(titleFilters, channelFilters)
     blockThumbnailSpoilers("video", titleFilters, channelFilters)
-  } else if (url.includes("/c/") || url.includes("/channel/"), url.includes("/user/")) {
+  } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
     blockThumbnailSpoilers("channel", titleFilters, channelFilters)
   } else {
     blockThumbnailSpoilers("home", titleFilters, channelFilters)
@@ -80,6 +80,11 @@ function getVideoMetadata(pageType, video) {
       videoTitle = video.getElementsByTagName("span").namedItem("video-title").title
       channelName = video.getElementsByClassName("style-scope ytd-channel-name").namedItem("text").innerHTML
       break;
+    case "channel":
+      videoTitle = video.getElementsByTagName("a").namedItem("video-title").title
+      const splitUrl = window.location.href.split("/")
+      channelName = (splitUrl.length === 5) ? splitUrl.slice(-1)[0] : splitUrl.slice(-2)[0]
+      break;
   }
 
   return { title: videoTitle, channel: channelName }
@@ -109,6 +114,7 @@ function blockWhenReady() {
   const timeDisplays = document.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer");
 
   if (timeDisplays.length > 1) {
+    console.log("Blocking spoilers");
     blockSpoilers()
   } else {
     setTimeout(blockWhenReady, 200);

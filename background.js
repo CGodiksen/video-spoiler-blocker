@@ -1,5 +1,6 @@
 browser.contextMenus.create({
   id: "add-channel-filter",
-  title: "Add Channel Filter",
-  contexts: ["link"]
+  title: "Block Spoilers From Channel",
+  contexts: ["link"],
+  targetUrlPatterns: ["*://*.youtube.com/user/*", "*://*.youtube.com/c/*", "*://*.youtube.com/channel/*"]
 }, () => console.log("Created"));

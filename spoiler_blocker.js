@@ -158,7 +158,6 @@ observer.observe(document, { childList: true, subtree: true });
 
 browser.runtime.onMessage.addListener(request => {
   if (request.blockSpoilers) {
-    console.log("Hello");
     blockSpoilers()
   }
 });

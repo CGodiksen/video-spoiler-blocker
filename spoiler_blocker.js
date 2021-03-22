@@ -25,6 +25,8 @@ const getPageType = () => {
     return "channel"
   } else if (url.includes("/results?")) {
     return "search"
+  } else if (url.includes("/subscriptions")) {
+    return "subscriptions"
   } else {
     return "home"
   }
@@ -42,6 +44,7 @@ const getVideoElements = (pageType) => {
       className = "style-scope ytd-compact-video-renderer"
       break;
     case "channel":
+    case "subscriptions":
       className = "style-scope ytd-grid-video-renderer"
       break;
     case "search":
@@ -121,6 +124,7 @@ const getVideoMetadata = (pageType, video) => {
       const splitUrl = window.location.href.split("/")
       channelName = (splitUrl.length === 5) ? splitUrl.slice(-1)[0] : splitUrl.slice(-2)[0]
       break;
+    case "subscriptions":
     case "search":
       videoTitle = video.getElementsByTagName("a").namedItem("video-title").title
       channelName = video.getElementsByClassName("yt-simple-endpoint style-scope yt-formatted-string")[1].innerHTML

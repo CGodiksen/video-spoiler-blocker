@@ -160,6 +160,7 @@ const observer = new MutationObserver((mutationList, _observer) => {
 
 observer.observe(document, { childList: true, subtree: true });
 
+// Listen for messages from the browser action, sent when a new filter is added.
 browser.runtime.onMessage.addListener(request => {
   if (request.blockSpoilers) {
     blockSpoilers()

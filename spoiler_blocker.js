@@ -98,6 +98,10 @@ const observer = new MutationObserver((mutationList, _observer) => {
           const video = node.parentNode.parentNode.parentNode.parentNode
           
           blockThumbnailSpoiler(video, node)
+        }
+        
+        // If the new node is the video length information on the Youtube player then check if it should be blocked.
+        if (node.nodeType === 3 && node.textContent === "0:00" && node.baseURI.includes("/watch?")) {
           blockPlayerSpoiler()
         }
       })

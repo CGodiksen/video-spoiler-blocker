@@ -3,4 +3,10 @@ browser.contextMenus.create({
   title: "Block Spoilers From Channel",
   contexts: ["link"],
   targetUrlPatterns: ["*://*.youtube.com/user/*", "*://*.youtube.com/c/*", "*://*.youtube.com/channel/*"]
-}, () => console.log("Created"));
+});
+
+browser.contextMenus.onClicked.addListener((info, _tab) => {
+  if (info.menuItemId === "add-channel-filter") {
+    console.log(info.linkText);
+  }
+})

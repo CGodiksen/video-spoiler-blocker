@@ -38,6 +38,8 @@ const getPageType = () => {
     return "search"
   } else if (url.includes("/subscriptions")) {
     return "subscriptions"
+  } else if (url.includes("/trending")) {
+    return "trending"
   } else {
     return "home"
   }
@@ -59,6 +61,7 @@ const getVideoElements = (pageType) => {
       className = "style-scope ytd-grid-video-renderer"
       break;
     case "search":
+    case "trending":
       className = "style-scope ytd-video-renderer"
       break;
   }
@@ -122,6 +125,7 @@ const getVideoMetadata = (pageType, video) => {
       break;
     case "subscriptions":
     case "search":
+    case "trending":
       videoTitle = video.getElementsByTagName("a").namedItem("video-title").title
       channelName = video.getElementsByClassName("yt-simple-endpoint style-scope yt-formatted-string")[1].innerHTML
   }

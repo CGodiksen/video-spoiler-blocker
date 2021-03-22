@@ -1,3 +1,60 @@
+// Check all videos in the current document for spoilers and block them if any are found.
+const blockSpoilers = () => {
+  const pageType = getPageType()
+  const videos = getVideoElements(pageType)
+
+  if (pageType === "video") {
+    blockPlayerSpoiler()
+  }
+
+  for (const video of videos) {
+    const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
+
+    if (timeDisplay) {
+      blockThumbnailSpoiler(video, timeDisplay)
+    }
+  }
+}
+
+const getPageType = () => {
+  const url = window.location.href
+
+  if (url.includes("/watch?")) {
+    return "video"
+  } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
+    return "channel"
+  } else {
+    return "home"
+  }
+}
+
+// Return all video elements in the current document. These elements contain both the thumbnail and video metadata. 
+const getVideoElements = (pageType) => {
+  let className = ""
+
+  switch (pageType) {
+    case "home":
+      className = "style-scope ytd-rich-grid-media"
+      break;
+    case "video":
+      className = "style-scope ytd-compact-video-renderer"
+      break;
+    case "channel":
+      className = "style-scope ytd-grid-video-renderer"
+      break;
+  }
+  const grid_media = document.getElementsByClassName(className)
+
+  const videos = []
+  for (let i = 0; i < grid_media.length; i++) {
+    if (grid_media[i].id === "dismissible") {
+      videos.push(grid_media[i])
+    }
+  }
+
+  return videos
+}
+
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
 const blockPlayerSpoiler = async () => {
   try {
@@ -40,18 +97,6 @@ const getExistingsFilters = async () => {
   return [titleFilters, channelFilters]
 }
 
-const getPageType = () => {
-  const url = window.location.href
-
-  if (url.includes("/watch?")) {
-    return "video"
-  } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
-    return "channel"
-  } else {
-    return "home"
-  }
-}
-
 // Return an object containing the video title and channel for a video element.
 const getVideoMetadata = (pageType, video) => {
   let videoTitle = ""
@@ -92,17 +137,9 @@ const observer = new MutationObserver((mutationList, _observer) => {
   mutationList.forEach(mutation => {
     if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
       mutation.addedNodes.forEach((node) => {
-        // If the new node is a video length then check if it should be blocked.
+        // If the new node is a video length then check if any spoilers should be blocked.
         if (node.nodeName.toLowerCase() === "ytd-thumbnail-overlay-time-status-renderer") {
-          // Going up the tree through the parents to find the corresponding video.
-          const video = node.parentNode.parentNode.parentNode.parentNode
-          
-          blockThumbnailSpoiler(video, node)
-        }
-        
-        // If the new node is the video length information on the Youtube player then check if it should be blocked.
-        if (node.nodeType === 3 && node.textContent === "0:00" && node.baseURI.includes("/watch?")) {
-          blockPlayerSpoiler()
+          blockSpoilers()
         }
       })
     }
@@ -110,47 +147,6 @@ const observer = new MutationObserver((mutationList, _observer) => {
 });
 
 observer.observe(document, { childList: true, subtree: true });
-
-// Check all videos in the current document for spoilers and block them if any are found. Used by browser action when new filters are added.
-const blockSpoilers = async () => {
-  const pageType = getPageType()
-  const videos = getVideoElements(pageType)
-
-  for (const video of videos) {
-    const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
-
-    if (timeDisplay) {
-      blockThumbnailSpoiler(video, timeDisplay)
-    }
-  }
-}
-
-// Return all video elements in the current document. These elements contain both the thumbnail and video metadata. 
-const getVideoElements = (pageType) => {
-  let className = ""
-
-  switch (pageType) {
-    case "home":
-      className = "style-scope ytd-rich-grid-media"
-      break;
-    case "video":
-      className = "style-scope ytd-compact-video-renderer"
-      break;
-    case "channel":
-      className = "style-scope ytd-grid-video-renderer"
-      break;
-  }
-  const grid_media = document.getElementsByClassName(className)
-
-  const videos = []
-  for (let i = 0; i < grid_media.length; i++) {
-    if (grid_media[i].id === "dismissible") {
-      videos.push(grid_media[i])
-    }
-  }
-
-  return videos
-}
 
 browser.runtime.onMessage.addListener(request => {
   if (request.blockSpoilers) {

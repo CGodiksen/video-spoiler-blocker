@@ -1,19 +1,30 @@
 // Check all videos in the current document for spoilers and block them if any are found.
-const blockSpoilers = () => {
+const blockSpoilers = async () => {
+  const [titleFilters, channelFilters] = await getExistingsFilters()
   const pageType = getPageType()
   const videos = getVideoElements(pageType)
 
   if (pageType === "video") {
-    blockPlayerSpoiler()
+    blockPlayerSpoiler(titleFilters, channelFilters)
   }
 
   for (const video of videos) {
     const timeDisplay = video.getElementsByTagName("ytd-thumbnail-overlay-time-status-renderer")[0];
 
     if (timeDisplay) {
-      blockThumbnailSpoiler(video, timeDisplay)
+      blockThumbnailSpoiler(pageType, video, titleFilters, channelFilters, timeDisplay)
     }
   }
+}
+
+// Return a promise to deliver all filters from local storage. 
+const getExistingsFilters = async () => {
+  const result = await browser.storage.local.get(null).catch(error => console.error(error));
+
+  const titleFilters = (result["title"]) ? result["title"] : []
+  const channelFilters = (result["channel"]) ? result["channel"] : []
+
+  return [titleFilters, channelFilters]
 }
 
 const getPageType = () => {
@@ -64,13 +75,11 @@ const getVideoElements = (pageType) => {
 }
 
 // Removing video length infomation from the bottom left of the Youtube player if necessary. 
-const blockPlayerSpoiler = async () => {
+const blockPlayerSpoiler = (titleFilters, channelFilters) => {
   try {
     const timeDisplay = document.getElementsByClassName("ytp-time-duration")[0]
 
     if (timeDisplay && timeDisplay.innerHTML) {
-      const [titleFilters, channelFilters] = await getExistingsFilters()
-
       const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
       const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
 
@@ -82,27 +91,14 @@ const blockPlayerSpoiler = async () => {
 }
 
 // Removing video length infomation from the bottom right of a thumbnail if necessary.
-const blockThumbnailSpoiler = async (video, timeDisplay) => {
+const blockThumbnailSpoiler = (pageType, video, titleFilters, channelFilters, timeDisplay) => {
   try {
-    const [titleFilters, channelFilters] = await getExistingsFilters()
-
-    const pageType = getPageType()
     const metadata = getVideoMetadata(pageType, video)
 
     removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
   } catch (error) {
     console.error(error);
   }
-}
-
-// Return a promise to deliver all filters from local storage. 
-const getExistingsFilters = async () => {
-  const result = await browser.storage.local.get(null).catch(error => console.error(error));
-
-  const titleFilters = (result["title"]) ? result["title"] : []
-  const channelFilters = (result["channel"]) ? result["channel"] : []
-
-  return [titleFilters, channelFilters]
 }
 
 // Return an object containing the video title and channel for a video element.
@@ -162,6 +158,7 @@ observer.observe(document, { childList: true, subtree: true });
 
 browser.runtime.onMessage.addListener(request => {
   if (request.blockSpoilers) {
+    console.log("Hello");
     blockSpoilers()
   }
 });

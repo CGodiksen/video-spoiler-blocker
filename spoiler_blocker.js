@@ -23,6 +23,8 @@ const getPageType = () => {
     return "video"
   } else if (url.includes("/c/") || url.includes("/channel/") || url.includes("/user/")) {
     return "channel"
+  } else if (url.includes("/results?")) {
+    return "search"
   } else {
     return "home"
   }
@@ -41,6 +43,9 @@ const getVideoElements = (pageType) => {
       break;
     case "channel":
       className = "style-scope ytd-grid-video-renderer"
+      break;
+    case "search":
+      className = "style-scope ytd-video-renderer"
       break;
   }
   const grid_media = document.getElementsByClassName(className)

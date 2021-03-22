@@ -121,6 +121,9 @@ const getVideoMetadata = (pageType, video) => {
       const splitUrl = window.location.href.split("/")
       channelName = (splitUrl.length === 5) ? splitUrl.slice(-1)[0] : splitUrl.slice(-2)[0]
       break;
+    case "search":
+      videoTitle = video.getElementsByTagName("a").namedItem("video-title").title
+      channelName = video.getElementsByClassName("yt-simple-endpoint style-scope yt-formatted-string")[1].innerHTML
   }
 
   return { title: videoTitle, channel: channelName }

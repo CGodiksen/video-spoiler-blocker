@@ -99,8 +99,8 @@ const blockThumbnailSpoiler = async (video, timeDisplay) => {
 const getExistingsFilters = async () => {
   const result = await browser.storage.local.get(null).catch(error => console.error(error));
 
-  const titleFilters = (Object.keys(result).length !== 0) ? result["title"] : []
-  const channelFilters = (Object.keys(result).length !== 0) ? result["channel"] : []
+  const titleFilters = (result["title"]) ? result["title"] : []
+  const channelFilters = (result["channel"]) ? result["channel"] : []
 
   return [titleFilters, channelFilters]
 }

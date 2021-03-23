@@ -101,6 +101,7 @@ initialize("title");
 // Listen for messages from the background script, sent when the "add-channel-filter" context menu item is clicked.
 browser.runtime.onMessage.addListener(request => {
   if (request.addFilter) {
-    addFilter(request.channelName, "channel")
+    channelFilterInput.value = request.channelName
+    addFilter(channelFilterInput, "channel")
   }
 });

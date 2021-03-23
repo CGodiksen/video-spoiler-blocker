@@ -8,8 +8,11 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-  // When the "add-channel-filter" is clicked, send a message to the browser action, requesting the channel to be added to the filters.
+  // Send a message to the browser action, requesting the channel to be added to the filters.
   if (info.menuItemId === "add-channel-filter") {
-    setTimeout(() => browser.tabs.sendMessage(tab.id, { addFilter: true, channelName: info.linkText }), 500);
+    // Exclude when the user right-clicks a channel image that has the complete channel url as the linkText.
+    if (!info.linkText.includes("https://www.youtube.com/")) {
+      setTimeout(() => browser.tabs.sendMessage(tab.id, { addFilter: true, channelName: info.linkText }), 500);
+    }
   }
 })

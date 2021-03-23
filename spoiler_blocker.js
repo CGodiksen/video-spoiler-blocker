@@ -120,8 +120,7 @@ const getVideoMetadata = (pageType, video) => {
       break;
     case "channel":
       videoTitle = video.getElementsByTagName("a").namedItem("video-title").title
-      const splitUrl = window.location.href.split("/")
-      channelName = (splitUrl.length === 5) ? splitUrl.slice(-1)[0] : splitUrl.slice(-2)[0]
+      channelName = document.getElementsByTagName("div").namedItem("inner-header-container").firstElementChild.firstElementChild.innerText.trim()
       break;
     case "subscriptions":
     case "search":

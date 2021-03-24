@@ -1,5 +1,5 @@
 # Video Spoiler Blocker
-Browser add-on for blocking video length information from specific videos to avoid spoilers. Add-ons that block length information from all videos already exist but this add-on allows you to choose which specific videos to block, either by channel name or video title.
+Browser add-on for blocking video length information from specific videos to avoid spoilers. Add-ons that block length information from all videos already exist but this add-on allows you to choose which specific videos to block, either by channel name or video title. When spoilers are blocked from a specific video, the video length is removed from the bottom right of the thumbnail and from the player. Filters can be added and removed using the popup. Channels can also be blocked by right-clicking the channel name and using the context menu.
 
 ## Usage
 The intended use for the add-on is to block video length information from specific videos where this information would spoil the contents of the video. An example of this is blocking this information for Counter-Strike Global Offensive highlight videos. The following image shows a typical example of a CSGO highlight video on your Youtube front-page.

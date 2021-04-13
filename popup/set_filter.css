@@ -7,12 +7,6 @@ html, body {
   color: white;
 }
 
-ul {
-  max-height: 62px;
-  overflow-x: auto;
-  overflow-y: visible;
-}
-
 input {
   background-color: #121212;
   border-color: #d14646;
@@ -48,4 +42,18 @@ ul {
   padding-bottom: 5px;
   padding-left: 10px;
   list-style-type: none;
+}
+
+[data-filter] {
+	position: relative;
+	cursor: help;
+}
+
+[data-filter]:hover::before {
+	content: attr(data-filter);
+	position: absolute;
+	bottom: 20px;
+	background: #000;
+	color: rgb(255, 255, 255);
+  z-index: 1000;
 }

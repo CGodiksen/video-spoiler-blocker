@@ -61,6 +61,7 @@ const displayFilter = (filter, filterType) => {
     li.textContent = `${filter} `
   } else {
     li.textContent = `${filter.substring(0, 15)}... `
+    li.setAttribute("data-filter", filter)
   }
 
   const deleteButton = document.createElement("img")

@@ -13,6 +13,8 @@ const titleFilterList = document.querySelector("ul.title-filter-list")
 const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
 
+const hideProgressBarCheckbox = document.querySelector("div.popup-content input[name='hide-progress-bar']")
+
 // Add event listeners to buttons.
 addChannelFilterBtn.addEventListener("click", () => addFilter(channelFilterInput, "channel"))
 addTitleFilterBtn.addEventListener("click", () => addFilter(titleFilterInput, "title"))

@@ -58,3 +58,7 @@ ul {
 	color: rgb(255, 255, 255);
   z-index: 1000;
 }
+
+h4[name="options"] {
+  margin-bottom: 5px;
+}

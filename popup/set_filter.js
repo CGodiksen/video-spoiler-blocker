@@ -15,6 +15,20 @@ const addTitleFilterBtn = document.querySelector('.add-title-filter');
 
 const hideProgressBarCheckbox = document.querySelector("div.popup-content input[name='hide-progress-bar']")
 
+hideProgressBarCheckbox.addEventListener("change", event => {
+  browser.storage.local.set({ hideProgressBar: event.target.checked })
+})
+
+const initializeOptions = async () => {
+  result = await browser.storage.local.get("hideProgressBar")
+
+  if (result.hideProgressBar) {
+    hideProgressBarCheckbox.checked = true
+  }
+}
+
+initializeOptions()
+
 // Add event listeners to buttons.
 addChannelFilterBtn.addEventListener("click", () => addFilter(channelFilterInput, "channel"))
 addTitleFilterBtn.addEventListener("click", () => addFilter(titleFilterInput, "title"))

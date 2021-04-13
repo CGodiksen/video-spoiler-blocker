@@ -57,10 +57,10 @@ const requestBlock = async () => {
 const displayFilter = (filter, filterType) => {
   const li = document.createElement("li")
 
-  if (filter.length <= 15) {
+  if (filter.length <= 18) {
     li.textContent = `${filter} `
   } else {
-    li.textContent = `${filter.substring(0, 15)}... `
+    li.textContent = `${filter.substring(0, 18)}... `
     li.setAttribute("data-filter", filter)
   }
 

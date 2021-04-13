@@ -5,6 +5,7 @@ html * {
 html, body {
   background-color:#292929;
   color: white;
+  width: 200px;
 }
 
 input {

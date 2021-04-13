@@ -56,7 +56,12 @@ const requestBlock = async () => {
 // Adding the filter to one of the unordered display lists based on the filter type.
 const displayFilter = (filter, filterType) => {
   const li = document.createElement("li")
-  li.textContent = `${filter} `
+
+  if (filter.length <= 15) {
+    li.textContent = `${filter} `
+  } else {
+    li.textContent = `${filter.substring(0, 15)}... `
+  }
 
   const deleteButton = document.createElement("img")
   deleteButton.src = "../icons/remove_16.png"

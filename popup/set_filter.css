@@ -5,15 +5,12 @@ html * {
 html, body {
   background-color:#292929;
   color: white;
-  width: 194px;
 }
 
 ul {
   max-height: 62px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 input {

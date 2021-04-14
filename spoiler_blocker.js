@@ -77,10 +77,10 @@ const getVideoElements = (pageType) => {
   return videos
 }
 
-// Removing video length infomation from the bottom left of the Youtube player if necessary. Also removing progress bar if chosen in options.
+// Removing video length infomation from the bottom of the Youtube player if necessary.
 const blockPlayerSpoiler = async (titleFilters, channelFilters) => {
   try {
-    const current = document.getElementsByClassName("ytp-time-current")[0]
+    const currentTime = document.getElementsByClassName("ytp-time-current")[0]
     const seperator = document.getElementsByClassName("ytp-time-separator")[0]
     const duration = document.getElementsByClassName("ytp-time-duration")[0]
     const progressBar = document.getElementsByClassName("ytp-progress-bar-container")[0]
@@ -90,17 +90,22 @@ const blockPlayerSpoiler = async (titleFilters, channelFilters) => {
       const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
 
       if (isBlocked(titleFilters, videoTitle, channelFilters, channelName)) {
-        current.style.visibility = "hidden"
         seperator.style.visibility = "hidden"
         duration.style.visibility = "hidden"
         
         result = await browser.storage.local.get(null)
-
+        
+        // Hiding progress bar if chosen in options.
         if (result.hideProgressBar) {
           progressBar.style.visibility = "hidden"
         }
+        
+        // Hiding current time if chosen in options.
+        if (result.hideCurrentTime) {
+          currentTime.style.visibility = "hidden"
+        }
       } else {
-        current.style.visibility = "visible"
+        currentTime.style.visibility = "visible"
         seperator.style.visibility = "visible"
         duration.style.visibility = "visible"
         progressBar.style.visibility = "visible"

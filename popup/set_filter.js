@@ -28,6 +28,12 @@ hideProgressBarCheckbox.addEventListener("change", event => {
 
 hideCurrentTimeCheckbox.addEventListener("change", event => {
   browser.storage.local.set({ hideCurrentTime: event.target.checked })
+
+  if (event.target.checked) {
+    requestAction("blockSpoilers")
+  } else {
+    requestAction("showCurrentTime")
+  }
 })
 
 const initializeOptions = async () => {

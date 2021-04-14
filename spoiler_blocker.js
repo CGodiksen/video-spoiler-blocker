@@ -170,6 +170,13 @@ const showProgressBar = () => {
   }
 }
 
+const showCurrentTime = () => {
+  if (getPageType() === "video") {
+    const currentTime = document.getElementsByClassName("ytp-time-current")[0]
+    currentTime.style.visibility = "visible"
+  }
+}
+
 // Create an observer that blocks spoilers each time a new time display is added to the DOM.
 const observer = new MutationObserver((mutationList, _observer) => {
   mutationList.forEach(mutation => {
@@ -196,8 +203,13 @@ browser.runtime.onMessage.addListener(request => {
     blockSpoilers()
   }
 
-  // Message recieved from the browser action, sent when the "Hide Progress Bar" options is unchecked.
+  // Message recieved from the browser action, sent when the "Hide Progress Bar" option is unchecked.
   if (request.showProgressBar) {
     showProgressBar()
+  }
+
+  // Message recieved from the browser action, sent when the "Hide Current Time" option is unchecked.
+  if (request.showCurrentTime) {
+    showCurrentTime()
   }
 });

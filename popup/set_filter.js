@@ -19,7 +19,9 @@ hideProgressBarCheckbox.addEventListener("change", event => {
   browser.storage.local.set({ hideProgressBar: event.target.checked })
   
   if (event.target.checked) {
-    requestBlock()
+    requestAction("blockSpoilers")
+  } else {
+    requestAction("showProgressBar")
   }
 })
 
@@ -60,16 +62,16 @@ const addFilter = async (inputField, filterType) => {
     await browser.storage.local.set({ [filterType]: existingFilters.concat(filter) }).catch(error => onError(error));
     displayFilter(filter, filterType)
 
-    requestBlock()
+    requestAction("blockSpoilers")
   }
 }
 
-// Send a message to all Youtube tabs notifying them that they should block spoilers.
-const requestBlock = async () => {
+// Send a message to all Youtube tabs notifying them that they should perform an action.
+const requestAction = async (action) => {
   const tabs = await browser.tabs.query({ url: "*://*.youtube.com/*" })
 
   for (const tab of tabs) {
-    browser.tabs.sendMessage(tab.id, { blockSpoilers: true })
+    browser.tabs.sendMessage(tab.id, { [action]: true })
   }
 }
 

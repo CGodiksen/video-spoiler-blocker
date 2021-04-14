@@ -152,6 +152,13 @@ const isBlocked = (titleFilters, videoTitle, channelFilters, channelName) => {
     channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
 }
 
+const showProgressBar = () => {
+  if (getPageType() === "video") {
+    const progressBar = document.getElementsByClassName("ytp-progress-bar-container")[0]
+    progressBar.style.visibility = "visible"
+  }
+}
+
 // Create an observer that blocks spoilers each time a new time display is added to the DOM.
 const observer = new MutationObserver((mutationList, _observer) => {
   mutationList.forEach(mutation => {
@@ -176,5 +183,10 @@ browser.runtime.onMessage.addListener(request => {
   // Message recieved from the browser action, sent when a new filter is added.
   if (request.blockSpoilers) {
     blockSpoilers()
+  }
+
+  // Messag recieved from the browser action, sent when the "Hide Progress Bar" options is unchecked.
+  if (request.showProgressBar) {
+    showProgressBar()
   }
 });

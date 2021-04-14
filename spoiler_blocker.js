@@ -102,7 +102,9 @@ const blockThumbnailSpoiler = (pageType, video, titleFilters, channelFilters, ti
   try {
     const metadata = getVideoMetadata(pageType, video)
 
-    removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, () => timeDisplay.remove())
+    if (isBlocked(titleFilters, metadata.title, channelFilters, metadata.channel)) {
+      timeDisplay.remove()
+    }
   } catch (error) {
     console.error(error);
   }
@@ -134,17 +136,6 @@ const getVideoMetadata = (pageType, video) => {
   }
 
   return { title: videoTitle, channel: channelName }
-}
-
-// Remove the given time display with the callback if either its title or channel is blocked by the filters.
-const removeBlocked = (titleFilters, videoTitle, channelFilters, channelName, removeCallback) => {
-  if (titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))) {
-    removeCallback()
-  }
-
-  if (channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())) {
-    removeCallback()
-  }
 }
 
 // Return true if the given title or channel is blocked by the given title or channel filters.

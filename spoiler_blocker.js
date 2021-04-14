@@ -77,16 +77,20 @@ const getVideoElements = (pageType) => {
   return videos
 }
 
-// Removing video length infomation from the bottom left of the Youtube player if necessary. 
+// Removing video length infomation from the bottom left of the Youtube player if necessary. Also removing progress bar if chosen in options.
 const blockPlayerSpoiler = (titleFilters, channelFilters) => {
   try {
-    const timeDisplay = document.getElementsByClassName("ytp-time-duration")[0]
+    const timeDisplay = document.getElementsByClassName("ytp-time-display notranslate")[0]
 
     if (timeDisplay && timeDisplay.innerHTML) {
       const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
       const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
 
-      removeBlocked(titleFilters, videoTitle, channelFilters, channelName, () => timeDisplay.innerHTML = "")
+      if (isBlocked(titleFilters, videoTitle, channelFilters, channelName)) {
+        timeDisplay.style.visibility = "hidden"
+      } else {
+        timeDisplay.style.visibility = "visible"
+      }
     }
   } catch (error) {
     console.error(error);
@@ -141,6 +145,12 @@ const removeBlocked = (titleFilters, videoTitle, channelFilters, channelName, re
   if (channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())) {
     removeCallback()
   }
+}
+
+// Return true if the given title or channel is blocked by the given title or channel filters.
+const isBlocked = (titleFilters, videoTitle, channelFilters, channelName) => {
+  return titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase())) ||
+    channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
 }
 
 // Create an observer that blocks spoilers each time a new time display is added to the DOM.

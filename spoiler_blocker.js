@@ -86,7 +86,7 @@ const blockPlayerSpoiler = (titleFilters, channelFilters) => {
       const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
       const channelName = document.getElementsByClassName("style-scope ytd-video-owner-renderer").namedItem("channel-name").innerText
 
-      removeBlocked(titleFilters, videoTitle, channelFilters, channelName, timeDisplay, (time) => time.innerHTML = "")
+      removeBlocked(titleFilters, videoTitle, channelFilters, channelName, () => timeDisplay.innerHTML = "")
     }
   } catch (error) {
     console.error(error);
@@ -98,7 +98,7 @@ const blockThumbnailSpoiler = (pageType, video, titleFilters, channelFilters, ti
   try {
     const metadata = getVideoMetadata(pageType, video)
 
-    removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, timeDisplay, (time) => time.remove())
+    removeBlocked(titleFilters, metadata.title, channelFilters, metadata.channel, () => timeDisplay.remove())
   } catch (error) {
     console.error(error);
   }
@@ -133,13 +133,13 @@ const getVideoMetadata = (pageType, video) => {
 }
 
 // Remove the given time display with the callback if either its title or channel is blocked by the filters.
-const removeBlocked = (titleFilters, videoTitle, channelFilters, channelName, timeDisplay, removeCallback) => {
+const removeBlocked = (titleFilters, videoTitle, channelFilters, channelName, removeCallback) => {
   if (titleFilters.some(filter => videoTitle.toLowerCase().includes(filter.toLowerCase()))) {
-    removeCallback(timeDisplay)
+    removeCallback()
   }
 
   if (channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())) {
-    removeCallback(timeDisplay)
+    removeCallback()
   }
 }
 

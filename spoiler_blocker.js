@@ -163,17 +163,11 @@ const isBlocked = (titleFilters, videoTitle, channelFilters, channelName) => {
     channelFilters.some(filter => channelName.toLowerCase() === filter.toLowerCase())
 }
 
-const showProgressBar = () => {
+// Find element on the video page using the given class name and make it visible.
+const showVideoElement = (className) => {
   if (getPageType() === "video") {
-    const progressBar = document.getElementsByClassName("ytp-progress-bar-container")[0]
-    progressBar.style.visibility = "visible"
-  }
-}
-
-const showCurrentTime = () => {
-  if (getPageType() === "video") {
-    const currentTime = document.getElementsByClassName("ytp-time-current")[0]
-    currentTime.style.visibility = "visible"
+    const element = document.getElementsByClassName(className)[0]
+    element.style.visibility = "visible"
   }
 }
 
@@ -205,11 +199,11 @@ browser.runtime.onMessage.addListener(request => {
 
   // Message recieved from the browser action, sent when the "Hide Progress Bar" option is unchecked.
   if (request.showProgressBar) {
-    showProgressBar()
+    showVideoElement("ytp-progress-bar-container")
   }
 
   // Message recieved from the browser action, sent when the "Hide Current Time" option is unchecked.
   if (request.showCurrentTime) {
-    showCurrentTime()
+    showVideoElement("ytp-time-current")
   }
 });

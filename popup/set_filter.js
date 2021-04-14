@@ -14,6 +14,7 @@ const addChannelFilterBtn = document.querySelector('.add-channel-filter');
 const addTitleFilterBtn = document.querySelector('.add-title-filter');
 
 const hideProgressBarCheckbox = document.querySelector("div.popup-content input[name='hide-progress-bar']")
+const hideCurrentTimeCheckbox = document.querySelector("div.popup-content input[name='hide-current-time']")
 
 hideProgressBarCheckbox.addEventListener("change", event => {
   browser.storage.local.set({ hideProgressBar: event.target.checked })

@@ -185,7 +185,7 @@ browser.runtime.onMessage.addListener(request => {
     blockSpoilers()
   }
 
-  // Messag recieved from the browser action, sent when the "Hide Progress Bar" options is unchecked.
+  // Message recieved from the browser action, sent when the "Hide Progress Bar" options is unchecked.
   if (request.showProgressBar) {
     showProgressBar()
   }

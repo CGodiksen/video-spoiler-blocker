@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Video Spoiler Blocker",
-  "version": "1.0",
+  "version": "1.1",
 
   "description": "Blocking video length information from specific videos to avoid spoilers.",
   "homepage_url": "https://github.com/CGodiksen/video-spoiler-blocker",

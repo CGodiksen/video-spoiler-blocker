@@ -90,7 +90,7 @@ const displayFilter = (filter, filterType) => {
   if (filter.length <= 18) {
     li.textContent = `${filter} `
   } else {
-    li.textContent = `${filter.substring(0, 18)}... `
+    li.textContent = `${filter.substring(0, 16)}... `
     li.setAttribute("data-filter", filter)
   }
 

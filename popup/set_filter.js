@@ -17,6 +17,10 @@ const hideProgressBarCheckbox = document.querySelector("div.popup-content input[
 
 hideProgressBarCheckbox.addEventListener("change", event => {
   browser.storage.local.set({ hideProgressBar: event.target.checked })
+  
+  if (event.target.checked) {
+    requestBlock()
+  }
 })
 
 const initializeOptions = async () => {

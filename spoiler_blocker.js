@@ -78,9 +78,10 @@ const getVideoElements = (pageType) => {
 }
 
 // Removing video length infomation from the bottom left of the Youtube player if necessary. Also removing progress bar if chosen in options.
-const blockPlayerSpoiler = (titleFilters, channelFilters) => {
+const blockPlayerSpoiler = async (titleFilters, channelFilters) => {
   try {
     const timeDisplay = document.getElementsByClassName("ytp-time-display notranslate")[0]
+    const progressBar = document.getElementsByClassName("ytp-progress-bar-container")[0]
 
     if (timeDisplay && timeDisplay.innerHTML) {
       const videoTitle = document.getElementsByClassName("title style-scope ytd-video-primary-info-renderer")[0].textContent
@@ -88,8 +89,15 @@ const blockPlayerSpoiler = (titleFilters, channelFilters) => {
 
       if (isBlocked(titleFilters, videoTitle, channelFilters, channelName)) {
         timeDisplay.style.visibility = "hidden"
+
+        result = await browser.storage.local.get("hideProgressBar")
+
+        if (result.hideProgressBar) {
+          progressBar.style.visibility = "hidden"
+        }
       } else {
         timeDisplay.style.visibility = "visible"
+        progressBar.style.visibility = "visible"
       }
     }
   } catch (error) {

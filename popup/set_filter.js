@@ -16,25 +16,19 @@ const addTitleFilterBtn = document.querySelector('.add-title-filter');
 const hideProgressBarCheckbox = document.querySelector("div.popup-content input[name='hide-progress-bar']")
 const hideCurrentTimeCheckbox = document.querySelector("div.popup-content input[name='hide-current-time']")
 
-hideProgressBarCheckbox.addEventListener("change", event => {
-  browser.storage.local.set({ hideProgressBar: event.target.checked })
-  
-  if (event.target.checked) {
-    requestAction("blockSpoilers")
-  } else {
-    requestAction("showProgressBar")
-  }
-})
+hideProgressBarCheckbox.addEventListener("change", event => checkBoxChange(event, "hideProgressBar", "showProgressBar"))
+hideCurrentTimeCheckbox.addEventListener("change", event => checkBoxChange(event, "hideCurrentTime", "showCurrentTime"))
 
-hideCurrentTimeCheckbox.addEventListener("change", event => {
-  browser.storage.local.set({ hideCurrentTime: event.target.checked })
+// Save the new state of the checkbox and request an action based on the new state.
+const checkBoxChange = (event, name, uncheckedAction) => {
+  browser.storage.local.set({ [name]: event.target.checked })
 
   if (event.target.checked) {
     requestAction("blockSpoilers")
   } else {
-    requestAction("showCurrentTime")
+    requestAction(uncheckedAction)
   }
-})
+}
 
 const initializeOptions = async () => {
   result = await browser.storage.local.get(null)
@@ -50,7 +44,6 @@ const initializeOptions = async () => {
 
 initializeOptions()
 
-// Add event listeners to buttons.
 addChannelFilterBtn.addEventListener("click", () => addFilter(channelFilterInput, "channel"))
 addTitleFilterBtn.addEventListener("click", () => addFilter(titleFilterInput, "title"))
 

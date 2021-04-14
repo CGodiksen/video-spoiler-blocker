@@ -26,11 +26,19 @@ hideProgressBarCheckbox.addEventListener("change", event => {
   }
 })
 
-const initializeOptions = async () => {
-  result = await browser.storage.local.get("hideProgressBar")
+hideCurrentTimeCheckbox.addEventListener("change", event => {
+  browser.storage.local.set({ hideCurrentTime: event.target.checked })
+})
 
+const initializeOptions = async () => {
+  result = await browser.storage.local.get(null)
+  
   if (result.hideProgressBar) {
     hideProgressBarCheckbox.checked = true
+  }
+
+  if (result.hideCurrentTime) {
+    hideCurrentTimeCheckbox.checked = true
   }
 }
 
